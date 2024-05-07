@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.util.Objects;
 
 public class GameView extends JPanel {
@@ -67,31 +68,45 @@ public class GameView extends JPanel {
         GridLayout bigGrid = new GridLayout(3, 3);
         gameView.setLayout(bigGrid);
 
+        try {
 
-        for (int i = 0; i < 9; i++) {
+            Image imgX = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.X.getPath())));
+            Image imgXScaled = imgX.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
 
-            GridLayout miniGrid = new GridLayout(3,3);
-            JPanel p = new JPanel();
-            p.setLayout(miniGrid);
-            p.setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
+            Image imgO = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.O.getPath())));
+            Image imgOScaled = imgO.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
 
-            for(int j = 0; j < 9; j++) {
-                JButton button = new JButton();
-                try {
-                    Image img = ImageIO.read(GameView.class.getResource(Settings.Img.X.getPath()));
-                    button.setIcon(new ImageIcon(img));
-                } catch (Exception e) {
-                    System.out.println(e);
+            ImageIcon iconX = new ImageIcon(imgXScaled);
+            ImageIcon iconO = new ImageIcon(imgOScaled);
+
+            for (int i = 0; i < 9; i++) {
+
+                GridLayout miniGrid = new GridLayout(3, 3);
+                JPanel p = new JPanel();
+                p.setLayout(miniGrid);
+                p.setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
+
+                for (int j = 0; j < 9; j++) {
+                    JButton button = new JButton();
+                    ImageIcon icon;
+
+                    if (j % 2 == 0) {
+                        button.setIcon(iconX);
+                    } else {
+                        button.setIcon(iconO);
+                    }
+
+
+                    button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
+                    p.add(button);
+                    gameView.add(p);
                 }
 
-                button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
-                p.add(button);
-                gameView.add(p);
             }
 
+        } catch (Exception e) {
+            System.out.println(e);
         }
-
-
 
         frame.setVisible(true);
         view.setFocusable(true);

@@ -43,7 +43,7 @@ public class Settings {
         O("O.png");
 
 
-        private final String basepath = "src/main/resources/img/";
+        private final String basepath = "/img/";
         private final String path;
         Img(String path){
             this.path = path;
