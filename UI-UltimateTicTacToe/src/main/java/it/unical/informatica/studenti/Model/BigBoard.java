@@ -6,7 +6,7 @@ public class BigBoard {
 
     private ArrayList<SmallBoard> matrix=new ArrayList<>();
 
-    private InfoGame.Winner BigBoardWinner;
+    private InfoGame.Winner BigBoardWinner = InfoGame.Winner.NOWINNER;
 
     private int[][] BigBoardMatrix = new int[3][3];
 
