@@ -3,10 +3,12 @@ package it.unical.informatica.studenti.View;
 import it.unical.informatica.studenti.Controller.GameController;
 import org.example.Settings;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.Objects;
 
 public class GameView extends JPanel {
 
@@ -74,11 +76,17 @@ public class GameView extends JPanel {
             p.setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
 
             for(int j = 0; j < 9; j++) {
+                JButton button = new JButton();
+                try {
+                    Image img = ImageIO.read(GameView.class.getResource(Settings.Img.X.getPath()));
+                    button.setIcon(new ImageIcon(img));
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
 
-            JButton button = new JButton();
-            button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
-            p.add(button);
-            gameView.add(p);
+                button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
+                p.add(button);
+                gameView.add(p);
             }
 
         }
