@@ -55,13 +55,20 @@ public class BigBoard {
 
     public void UpdateBoardStatus(int i, int j, int boardIndex, int value){
 
-        if(nextBoard == -1 || boardIndex == nextBoard)
-            matrix.get(boardIndex).SetCell(i,j,value);
+        if(nextBoard == -1 || boardIndex == nextBoard) {
+            //System.out.println("Ciao");
+            matrix.get(boardIndex).SetCell(i, j, value);
+        }
 
         if(InfoGame.checkWinner(matrix.get(3*i+j).getMatrix()) == InfoGame.Winner.NOWINNER)
             nextBoard = 3*i+j;
         else
             nextBoard = -1;
+        //System.out.println("Addio");
+    }
+
+    public int getNextBoard() {
+        return nextBoard;
     }
 
 }

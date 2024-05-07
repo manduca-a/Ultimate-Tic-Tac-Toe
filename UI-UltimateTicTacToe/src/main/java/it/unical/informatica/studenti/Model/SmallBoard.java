@@ -23,7 +23,8 @@ public class SmallBoard {
     }
 
     public boolean SetCell(int i, int j, int value){
-        if(matrix[i][j] != 0){
+        if(matrix[i][j] == 0){
+            System.out.println("Ciao" + i +j);
             matrix[i][j] = value;
             return  true;
         }
