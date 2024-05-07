@@ -1,4 +1,4 @@
-package org.example;
+package it.unical.informatica.studenti;
 
 import java.awt.*;
 
