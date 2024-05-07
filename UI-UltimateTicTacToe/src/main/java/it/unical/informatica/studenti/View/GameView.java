@@ -1,7 +1,7 @@
 package it.unical.informatica.studenti.View;
 
 import it.unical.informatica.studenti.Controller.GameController;
-import org.example.Settings;
+import it.unical.informatica.studenti.Settings;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
