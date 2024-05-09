@@ -1,5 +1,7 @@
 package it.unical.informatica.studenti.Model;
 
+import it.unical.informatica.studenti.Teams;
+import it.unical.informatica.studenti.WorldGame;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.OptionDescriptor;
@@ -15,9 +17,7 @@ import java.util.ArrayList;
 
 public class EmbaspManager {
 
-    private enum Teams {Team1,Team2,Team3}
-
-    public void avviaASP(Teams team){
+    public static ArrayList<Integer> avviaASP(Teams team){
         DesktopService service = new DLV2DesktopService("lib/dlv2.exe");
         Handler handler = new DesktopHandler(service);
         OptionDescriptor option = new OptionDescriptor("-n 1");
@@ -25,17 +25,43 @@ public class EmbaspManager {
         InputProgram program = new ASPInputProgram();
         program.addFilesPath("encodings/encoding");
         switch(team){
-            case Team1 -> AddProgramTeamName(program);
-            case Team2 -> AddProgramTeamName(program);
-            case Team3 -> AddProgramTeamName(program);
-            //Ogni team implementa la propria classe EmbAsp
+            case Team1 -> {return AddProgramTeamName(handler,program);}
+            case Team2 -> {return AddProgramTeamName(handler,program);}
+            case Team3 -> {return AddProgramTeamName(handler,program);}
+            //Ogni team implementa il proprio metodo EmbAsp
         }
+        return null;
+    }
+
+    private static ArrayList<Integer> AddProgramTeamName(Handler handler, InputProgram program){
+
+        //esempio di come aggiungere gli Input
+        /*for (int i =0;i<3;i++)
+            for (int j =5;j<7;j++)
+                program.addObjectInput(new Arco(i, j));
+        program.addObjectInput(new Arco(8, 9));
+        program.addObjectInput(new Arco(9, 10));
+        program.addObjectInput(new Arco(10, 8));*/
+        //
+
+        for ( SmallBoard b: WorldGame.getInstance().getBigBoard().getSmallBoards()){
+            for (int i = 0; i<3; i++){
+                for(int j= 0; j<3; j++){
+                    //aggiungi classe per elemento della board
+                }
+            }
+        }
+
+        //eventuali altri predicati da aggiungere da input
+
         handler.addProgram(program);
         System.out.println(program.getPrograms());
         Output output = handler.startSync();
-        //ASPMapper.getInstance().registerClass(InCricca.class);
+        //ASPMapper.getInstance().registerClass(InCricca.class); //Esempio registrare classe per EmbAsp
 
         AnswerSets answersets = (AnswerSets) output;
+
+        ArrayList<Integer> indici = new ArrayList<>();
 
         for(AnswerSet a: answersets.getOptimalAnswerSets()){
             ArrayList<String> elements = new ArrayList<String>();
@@ -54,35 +80,8 @@ public class EmbaspManager {
             catch (Exception e) {
                 e.printStackTrace();
             }
-            for (String e : elements) {
-                System.out.println(e);
-
-            }
         }
-    }
-
-    private InputProgram AddProgramTeamName(InputProgram program){
-
-        /*for (int i =0;i<3;i++)
-            for (int j =5;j<7;j++)
-                program.addObjectInput(new Arco(i, j));
-        program.addObjectInput(new Arco(8, 9));
-        program.addObjectInput(new Arco(9, 10));
-        program.addObjectInput(new Arco(10, 8));*/
-
-        BigBoard bigBoard = WorldGame.getInstance().getBigBoard();
-
-        for ( SmallBoard b: WorldGame.getInstance().getBigBoard().getSmallBoards()){
-            for (int i = 0; i<3; i++){
-                for(int j= 0; j<3; j++){
-                    //aggiungi classe per elemento della board
-                }
-            }
-        }
-
-        //eventuali altri predicati da aggiungere da input
-
-        return program;
+        return indici;
     }
 
 }

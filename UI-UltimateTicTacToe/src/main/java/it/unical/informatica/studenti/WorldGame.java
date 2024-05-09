@@ -1,5 +1,10 @@
-package it.unical.informatica.studenti.Model;
+package it.unical.informatica.studenti;
 
+import it.unical.informatica.studenti.Model.BigBoard;
+import it.unical.informatica.studenti.Model.EmbaspManager;
+import it.unical.informatica.studenti.Model.InfoGame;
+
+import java.util.Random;
 import java.util.Scanner;
 
 public class WorldGame {
@@ -63,7 +68,10 @@ public class WorldGame {
     }
 
     public void avviaPlayervsCPU(){
-
+        Random random = new Random();
+        int starting = random.nextInt(0,2);
+        if( starting == 0)
+            EmbaspManager.avviaASP(Teams.Team1); //da cambiare in base a quale team deve giocare come IA
     }
 
     public void resetBoard(){
