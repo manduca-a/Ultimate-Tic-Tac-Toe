@@ -10,6 +10,7 @@ import it.unical.mat.embasp.languages.asp.AnswerSets;
 import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
 import it.unical.mat.embasp.platforms.desktop.DesktopService;
 import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
+
 import java.util.ArrayList;
 
 public class EmbaspManager {
