@@ -8,6 +8,6 @@ public class Main
     public static void main( String[] args )
     {
         GameView.launch();
-        WorldGame.getInstance().avvia();
+        WorldGame.getInstance().avviaPlayervsCPU();
     }
 }

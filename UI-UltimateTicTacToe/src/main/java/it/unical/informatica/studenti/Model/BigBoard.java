@@ -6,13 +6,17 @@ import static it.unical.informatica.studenti.Model.InfoGame.Winner.*;
 
 public class BigBoard {
 
-    private ArrayList<SmallBoard> smallBoards =new ArrayList<>();
+    private final ArrayList<SmallBoard> smallBoards =new ArrayList<>();
 
     private InfoGame.Winner BigBoardWinner = InfoGame.Winner.NOWINNER;
 
-    private int[][] gameBoard = new int[3][3];
+    private final int[][] gameBoard = new int[3][3];
 
     private int nextBoard = -1;
+
+    public ArrayList<SmallBoard> getSmallBoards() {
+        return smallBoards;
+    }
 
     public InfoGame.Winner getBigBoardWinner() {
         return BigBoardWinner;
@@ -55,17 +59,17 @@ public class BigBoard {
         }
     }
 
-    public void UpdateBoardStatus(int i, int j, int boardIndex, int value){
+    public void UpdateBoardStatus(int i, int j, int boardIndex, int value) throws RuntimeException {
 
         if(nextBoard == -1 || nextBoard == boardIndex){
             smallBoards.get(boardIndex).SetCell(i, j, value);
-            if(smallBoards.get(3*i+j).isWinner() == InfoGame.Winner.NOWINNER)
+            if(smallBoards.get(3*i+j).GetWinner() == InfoGame.Winner.NOWINNER)
                 nextBoard = 3*i+j;
             else
                 nextBoard = -1;
         }
         else
-            throw new RuntimeException("Invalid Move");
+            throw new RuntimeException("Invalid Board Move");
 
     }
 

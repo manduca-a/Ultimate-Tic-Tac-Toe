@@ -15,11 +15,15 @@ public class WorldGame {
 
     private BigBoard bigBoard;
 
+    public BigBoard getBigBoard() {
+        return bigBoard;
+    }
+
     private WorldGame(){
         bigBoard =new BigBoard();
     }
 
-    public void avvia(){
+    public void avviaCPU1vsCPU2(){
         bigBoard.PrintGameBoard();
         /*
         java.awt.EventQueue.invokeLater(() -> {
@@ -31,11 +35,16 @@ public class WorldGame {
         int i = 0;
         int board = -1, x = -1, y = -1;
         while(bigBoard.getBigBoardWinner() == InfoGame.Winner.NOWINNER){
-            System.out.println("Turno: "+i);
-            System.out.print("Griglia:" + board);
+            if( i % 2 == 0){
+                //funzione che esegue ASP (Team1) e fa doClick sul button corrispettivo
+            }
+            else {
+                //funzione che esegue ASP (Team2) e fa doClick sul button corrispettivo
+            }
+            /*System.out.println("Turno: " +i);
+            System.out.println("Griglia:" + board);
             if (i == 0 || board == -1){
                 System.out.println("Decidi la cella");
-
                 board = in.nextInt();
             }
             System.out.println("X:");
@@ -49,8 +58,12 @@ public class WorldGame {
             }
             i+=1;
             bigBoard.PrintGameBoard();
-            board = bigBoard.getNextBoard();
+            board = bigBoard.getNextBoard();*/
         }
+    }
+
+    public void avviaPlayervsCPU(){
+
     }
 
     public void resetBoard(){

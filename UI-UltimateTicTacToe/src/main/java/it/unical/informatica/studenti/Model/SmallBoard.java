@@ -2,15 +2,15 @@ package it.unical.informatica.studenti.Model;
 
 public class SmallBoard {
 
-    private int[][] subBoard =new int[3][3];
+    private final int[][] subBoard =new int[3][3];
 
-    private BigBoard bigBoard;
+    private final BigBoard bigBoard;
 
-    private int id;
+    private final int id;
 
     private InfoGame.Winner winner = InfoGame.Winner.NOWINNER;
 
-    public InfoGame.Winner isWinner() {
+    public InfoGame.Winner GetWinner() {
         return winner;
     }
 
