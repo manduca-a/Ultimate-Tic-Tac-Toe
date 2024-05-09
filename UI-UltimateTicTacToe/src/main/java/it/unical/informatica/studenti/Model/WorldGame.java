@@ -20,7 +20,7 @@ public class WorldGame {
     }
 
     public void avvia(){
-        bigBoard.PrintMatrix();
+        bigBoard.PrintGameBoard();
         /*
         java.awt.EventQueue.invokeLater(() -> {
             new MatrixFrame().setVisible(true);
@@ -30,7 +30,7 @@ public class WorldGame {
         Scanner in = new Scanner(System.in);
         int i = 0;
         int board = -1, x = -1, y = -1;
-        while(bigBoard.getBigBoardWinner() == InfoGame.Winner.NOWINNER || bigBoard.getBigBoardWinner() == null){
+        while(bigBoard.getBigBoardWinner() == InfoGame.Winner.NOWINNER){
             System.out.println("Turno: "+i);
             System.out.print("Griglia:" + board);
             if (i == 0 || board == -1){
@@ -48,7 +48,7 @@ public class WorldGame {
                 bigBoard.UpdateBoardStatus(x, y, board, -1);
             }
             i+=1;
-            bigBoard.PrintMatrix();
+            bigBoard.PrintGameBoard();
             board = bigBoard.getNextBoard();
         }
     }

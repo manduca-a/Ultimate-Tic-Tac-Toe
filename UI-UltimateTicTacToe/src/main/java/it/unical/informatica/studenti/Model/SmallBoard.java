@@ -2,38 +2,52 @@ package it.unical.informatica.studenti.Model;
 
 public class SmallBoard {
 
-    private int[][] matrix =new int[3][3];
+    private int[][] subBoard =new int[3][3];
 
-    private InfoGame.Winner winner;
+    private BigBoard bigBoard;
+
+    private int id;
+
+    private InfoGame.Winner winner = InfoGame.Winner.NOWINNER;
 
     public InfoGame.Winner isWinner() {
         return winner;
     }
 
-    public int[][] getMatrix() {
-        return matrix;
+    public int[][] getSubBoard() {
+        return subBoard;
     }
 
-    public SmallBoard(){
+    public SmallBoard(BigBoard board, int boardId){
+        bigBoard = board;
+        id = boardId;
+
         for( int i =0; i < 3; i++){
             for (int j =0 ; j<3 ; j++){
-                matrix[i][j] = 0;
+                subBoard[i][j] = 0;
             }
         }
     }
 
-    public boolean SetCell(int i, int j, int value){
-        if(matrix[i][j] == 0){
-            System.out.println("Ciao" + i +j);
-            matrix[i][j] = value;
-            return  true;
+    public void SetCell(int i, int j, int value){
+        if (subBoard[i][j] == 0) {
+            subBoard[i][j] = value;
+            switch (InfoGame.checkWinner(subBoard)) {
+                case CROSS -> {
+                    bigBoard.UpdateBigBoard(1, id);
+                    winner = InfoGame.Winner.CROSS;
+                }
+                case CIRCLE -> {
+                    bigBoard.UpdateBigBoard(-1, id);
+                    winner = InfoGame.Winner.CIRCLE;
+                }
+                case DRAW -> {
+                    bigBoard.UpdateBigBoard(-10, id); // potremmo avere dei problemi, da capire come individuare la draw
+                    winner = InfoGame.Winner.DRAW;
+                }
+            }
         }
-        return  false;
+        else
+            throw new RuntimeException("invalid move");
     }
-
-    public void checkWinner(){
-        winner = InfoGame.checkWinner(matrix);
-    }
-
-
 }

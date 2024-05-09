@@ -30,7 +30,7 @@ public class InfoGame {
             if( counterRow == 3 || counterCols == 3 || counterMajorD == 3){
                 return InfoGame.Winner.CROSS;
             }
-            else if (counterRow == -3 || counterCols ==-3 || counterMajorD == -3 ){
+            else if (counterRow == -3 || counterCols == -3 || counterMajorD == -3 ){
                 return  InfoGame.Winner.CIRCLE;
             }
             counterRow = 0;
