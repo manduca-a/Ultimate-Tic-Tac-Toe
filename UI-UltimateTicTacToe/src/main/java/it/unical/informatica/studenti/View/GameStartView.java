@@ -1,7 +1,8 @@
 package it.unical.informatica.studenti.View;
 
 import it.unical.informatica.studenti.Controller.GameStartController;
-import org.example.Settings;
+import it.unical.informatica.studenti.Settings;
+
 
 import javax.swing.*;
 import java.awt.*;

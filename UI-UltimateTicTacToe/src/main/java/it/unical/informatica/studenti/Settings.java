@@ -1,4 +1,4 @@
-package org.example;
+package it.unical.informatica.studenti;
 
 import java.awt.*;
 
@@ -33,6 +33,27 @@ public class Settings {
         private final Color color;
         State(Color c) { this.color = c; }
         public Color getColor() { return color; }
+    }
+
+
+
+
+    public enum Img {
+        X(  "X.png"),
+        O("O.png");
+
+
+        private final String basepath = "/img/";
+        private final String path;
+        Img(String path){
+            this.path = path;
+        }
+
+        public String getPath() {
+            System.out.println(basepath + path);
+            return basepath + path;
+        }
+
 
     }
 
