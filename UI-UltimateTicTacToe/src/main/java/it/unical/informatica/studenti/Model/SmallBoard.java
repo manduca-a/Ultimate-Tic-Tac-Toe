@@ -18,6 +18,10 @@ public class SmallBoard {
         return subBoard;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public SmallBoard(BigBoard board, int boardId){
         bigBoard = board;
         id = boardId;

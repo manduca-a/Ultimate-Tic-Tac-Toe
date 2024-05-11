@@ -71,7 +71,7 @@ public class WorldGame {
         Random random = new Random();
         int starting = random.nextInt(0,2);
         if( starting == 0)
-            EmbaspManager.avviaASP(Teams.Team1); //da cambiare in base a quale team deve giocare come IA
+            EmbaspManager.avviaASP(Teams.Team2); //da cambiare in base a quale team deve giocare come IA
     }
 
     public void resetBoard(){

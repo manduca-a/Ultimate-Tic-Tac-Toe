@@ -2,7 +2,6 @@ package it.unical.informatica.studenti.Model;
 
 public class InfoGame {
     public enum Winner {CROSS,CIRCLE,DRAW, NOWINNER};
-
     public static Winner checkWinner(int[][] matrix){
         int counterRow = 0;
         int counterCols = 0;
