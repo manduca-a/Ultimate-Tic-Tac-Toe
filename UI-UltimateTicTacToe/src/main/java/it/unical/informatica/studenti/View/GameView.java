@@ -16,21 +16,33 @@ public class GameView extends JPanel {
     private JFrame frame;
     private static GameView gameView;
 
-    public GameView(JFrame frame) {
+    private ImageIcon iconX, iconO;
+
+    public GameView(JFrame frame) throws IOException {
         setBackground(Color.DARK_GRAY);
         this.frame = frame;
+
+        Image imgX = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.X.getPath())));
+        Image imgXScaled = imgX.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
+
+        Image imgO = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.O.getPath())));
+        Image imgOScaled = imgO.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
+
+        iconX = new ImageIcon(imgXScaled);
+        iconO = new ImageIcon(imgOScaled);
     }
 
-    public static void launch(JFrame frame, JPanel oldView) {
+    public static void launch(JFrame frame, JPanel oldView) throws IOException {
         frame.remove(oldView);
         frame.setSize(Settings.WINDOWS_GAMEVIEW_SIZE, Settings.WINDOWS_GAMEVIEW_SIZE);
 
-
         GameView view = new GameView(frame);
         gameView = view;
-        //view.launch(frame);
-        GameController controller = new GameController(view);
-        view.addMouseListener(controller);
+
+        GameController controller = new GameController(frame, view);
+
+        view.addKeyListener(controller);
+
         frame.add(view);
 
         GameFrame.frameSettings(frame);
@@ -59,7 +71,6 @@ public class GameView extends JPanel {
         frame.setLayout(new BorderLayout());
         frame.add(view, BorderLayout.CENTER);
 
-
         int topMargin = 25;
         view.setBorder(BorderFactory.createEmptyBorder(topMargin, 0, 0, 0));
 
@@ -70,15 +81,6 @@ public class GameView extends JPanel {
 
         try {
 
-            Image imgX = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.X.getPath())));
-            Image imgXScaled = imgX.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
-
-            Image imgO = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.O.getPath())));
-            Image imgOScaled = imgO.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
-
-            ImageIcon iconX = new ImageIcon(imgXScaled);
-            ImageIcon iconO = new ImageIcon(imgOScaled);
-
             for (int i = 0; i < 9; i++) {
 
                 GridLayout miniGrid = new GridLayout(3, 3);
@@ -88,20 +90,21 @@ public class GameView extends JPanel {
 
                 for (int j = 0; j < 9; j++) {
                     JButton button = new JButton();
+                    button.setName(String.valueOf(i) + " " + String.valueOf(j));
+                    button.addActionListener(controller);
                     ImageIcon icon;
-
+/*
                     if (j % 2 == 0) {
                         button.setIcon(iconX);
                     } else {
                         button.setIcon(iconO);
                     }
-
+*/
 
                     button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
                     p.add(button);
-                    gameView.add(p);
                 }
-
+                gameView.add(p);
             }
 
         } catch (Exception e) {
@@ -113,13 +116,12 @@ public class GameView extends JPanel {
         view.requestFocus();
     }
 
-    public static void launch() {
-        JFrame frame = new JFrame();
-        GameStartView view = new GameStartView(frame);
-    }
-
     public static GameView getGameview() {
         return gameView;
+    }
+
+    public void setIcon(JButton o) {
+        o.setIcon(iconX);
     }
 /*
     @Override
