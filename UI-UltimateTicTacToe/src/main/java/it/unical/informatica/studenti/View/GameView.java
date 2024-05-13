@@ -120,8 +120,11 @@ public class GameView extends JPanel {
         return gameView;
     }
 
-    public void setIcon(JButton o) {
+    public void setIconX(JButton o) {
         o.setIcon(iconX);
+    }
+    public void setIconO(JButton o) {
+        o.setIcon(iconO);
     }
 /*
     @Override

@@ -10,9 +10,10 @@ import java.awt.event.*;
 
 public class GameController extends KeyAdapter implements ActionListener {
 
-    private JFrame jFrame;
-    private GameView gameView;
-    private WorldGame worldGame = WorldGame.getInstance();
+    private final JFrame jFrame;
+    private final GameView gameView;
+    private final WorldGame worldGame = WorldGame.getInstance();
+    private int value = -1; // X = 1, O = -1
 
     public GameController(JFrame frame, GameView view) {
         this.jFrame = frame;
@@ -21,21 +22,19 @@ public class GameController extends KeyAdapter implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //put a X or a O if we can choose
-
         JButton o = (JButton)e.getSource();
-        System.out.println("metto x in " + o.getText());
         String[] indexes = o.getName().split("\\s+");
         int indBigBoard = Integer.parseInt(indexes[0]);
         int indSmallBoard = Integer.parseInt(indexes[1]);
         int rowSmallBoard = indSmallBoard / 3;
         int colSmallBoard = indSmallBoard % 3;
 
-        // todo - al momento inserisce sempre X
-        worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, 1);
+        worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, value *= -1);
+
+        //! Runtime exception occurs when the player tries to insert into the wrong board
 
         //set icon
-        gameView.setIcon(o);
+        if (value == 1) gameView.setIconX(o); else if (value == -1) gameView.setIconO(o);
     }
 
     @Override
