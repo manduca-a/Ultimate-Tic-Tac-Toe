@@ -1,7 +1,9 @@
 package it.unical.informatica.studenti.Controller;
 
+import it.unical.informatica.studenti.Model.BigBoard;
 import it.unical.informatica.studenti.View.GameStartView;
 import it.unical.informatica.studenti.View.GameView;
+import it.unical.informatica.studenti.WorldGame;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -10,6 +12,7 @@ public class GameController extends KeyAdapter implements ActionListener {
 
     private JFrame jFrame;
     private GameView gameView;
+    private WorldGame worldGame = WorldGame.getInstance();
 
     public GameController(JFrame frame, GameView view) {
         this.jFrame = frame;
@@ -21,9 +24,15 @@ public class GameController extends KeyAdapter implements ActionListener {
         //put a X or a O if we can choose
 
         JButton o = (JButton)e.getSource();
-        String name = o.getName();
+        System.out.println("metto x in " + o.getText());
+        String[] indexes = o.getName().split("\\s+");
+        int indBigBoard = Integer.parseInt(indexes[0]);
+        int indSmallBoard = Integer.parseInt(indexes[1]);
+        int rowSmallBoard = indSmallBoard / 3;
+        int colSmallBoard = indSmallBoard % 3;
 
-        System.out.println("metto X in " + name);
+        // todo - al momento inserisce sempre X
+        worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, 1);
 
         //set icon
         gameView.setIcon(o);
