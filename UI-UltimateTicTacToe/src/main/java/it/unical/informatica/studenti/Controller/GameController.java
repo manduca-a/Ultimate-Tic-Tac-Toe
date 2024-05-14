@@ -1,6 +1,5 @@
 package it.unical.informatica.studenti.Controller;
 
-import it.unical.informatica.studenti.Model.BigBoard;
 import it.unical.informatica.studenti.View.GameStartView;
 import it.unical.informatica.studenti.View.GameView;
 import it.unical.informatica.studenti.WorldGame;
@@ -13,8 +12,7 @@ public class GameController extends KeyAdapter implements ActionListener {
     private final JFrame jFrame;
     private final GameView gameView;
     private final WorldGame worldGame = WorldGame.getInstance();
-    private int value = -1; // X = 1, O = -1
-
+    private int value = 1; // X = 1, O = -1
     public GameController(JFrame frame, GameView view) {
         this.jFrame = frame;
         this.gameView = view;
@@ -29,12 +27,10 @@ public class GameController extends KeyAdapter implements ActionListener {
         int rowSmallBoard = indSmallBoard / 3;
         int colSmallBoard = indSmallBoard % 3;
 
-        worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, value *= -1);
-
-        //! Runtime exception occurs when the player tries to insert into the wrong board
-
-        //set icon
-        if (value == 1) gameView.setIconX(o); else if (value == -1) gameView.setIconO(o);
+        if (worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, value)) {
+            if (value == 1) gameView.setIconX(o); else if (value == -1) gameView.setIconO(o);
+            value *= -1;
+        }
     }
 
     @Override

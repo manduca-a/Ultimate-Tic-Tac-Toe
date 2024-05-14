@@ -59,17 +59,19 @@ public class BigBoard {
         }
     }
 
-    public void UpdateBoardStatus(int i, int j, int boardIndex, int value) throws RuntimeException {
+    public boolean UpdateBoardStatus(int i, int j, int boardIndex, int value) {
 
-        if(nextBoard == -1 || nextBoard == boardIndex){
+        if((nextBoard == -1 || nextBoard == boardIndex) && smallBoards.get(boardIndex).getSubBoard()[i][j] == 0 ){
             smallBoards.get(boardIndex).SetCell(i, j, value);
             if(smallBoards.get(3*i+j).GetWinner() == InfoGame.Winner.NOWINNER)
                 nextBoard = 3*i+j;
             else
                 nextBoard = -1;
+            return true;
         }
         else
-            throw new RuntimeException("Invalid Board Move");
+            //throw new RuntimeException("Invalid Board Move");
+            return false;
 
     }
 
