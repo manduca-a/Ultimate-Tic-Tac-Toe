@@ -1,5 +1,7 @@
 package it.unical.informatica.studenti.Model;
 
+import it.unical.informatica.studenti.WorldGame;
+
 public class SmallBoard {
 
     private final int[][] subBoard =new int[3][3];
@@ -40,14 +42,17 @@ public class SmallBoard {
                 case CROSS -> {
                     bigBoard.UpdateBigBoard(1, id);
                     winner = InfoGame.Winner.CROSS;
+                    WorldGame.getInstance().getWinnerListener().onNewWinner(winner, id);
                 }
                 case CIRCLE -> {
                     bigBoard.UpdateBigBoard(-1, id);
                     winner = InfoGame.Winner.CIRCLE;
+                    WorldGame.getInstance().getWinnerListener().onNewWinner(winner, id);
                 }
                 case DRAW -> {
                     bigBoard.UpdateBigBoard(-10, id); // potremmo avere dei problemi, da capire come individuare la draw
                     winner = InfoGame.Winner.DRAW;
+                    WorldGame.getInstance().getWinnerListener().onNewWinner(winner, id);
                 }
             }
         }

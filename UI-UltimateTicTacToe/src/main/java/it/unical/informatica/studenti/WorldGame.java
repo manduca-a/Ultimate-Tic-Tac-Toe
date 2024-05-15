@@ -1,13 +1,17 @@
 package it.unical.informatica.studenti;
 
+import it.unical.informatica.studenti.Controller.WinnerListener;
 import it.unical.informatica.studenti.Model.BigBoard;
 import it.unical.informatica.studenti.Model.EmbaspManager;
 import it.unical.informatica.studenti.Model.InfoGame;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
 public class WorldGame {
+
+    private WinnerListener winnerListener;
 
     private static WorldGame instance = null;
 
@@ -78,4 +82,11 @@ public class WorldGame {
         bigBoard = new BigBoard();
     }
 
+    public void addWinnerListener(WinnerListener listener){
+        winnerListener = listener;
+    }
+
+    public WinnerListener getWinnerListener() {
+        return winnerListener;
+    }
 }

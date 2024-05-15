@@ -1,15 +1,18 @@
 package it.unical.informatica.studenti.Controller;
 
+
 import it.unical.informatica.studenti.Settings;
+import it.unical.informatica.studenti.Model.InfoGame;
 import it.unical.informatica.studenti.View.GameStartView;
 import it.unical.informatica.studenti.View.GameView;
 import it.unical.informatica.studenti.WorldGame;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
-public class GameController extends KeyAdapter implements ActionListener {
+public class GameController extends KeyAdapter implements ActionListener, WinnerListener {
 
     private final JFrame jFrame;
     private final GameView gameView;
@@ -18,6 +21,7 @@ public class GameController extends KeyAdapter implements ActionListener {
     public GameController(JFrame frame, GameView view) {
         this.jFrame = frame;
         this.gameView = view;
+        worldGame.addWinnerListener(this);
     }
 
     @Override
@@ -63,5 +67,29 @@ public class GameController extends KeyAdapter implements ActionListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    @Override
+    public void onNewWinner(InfoGame.Winner winner, int id) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1,1));
+        JButton button = new JButton();
+        button.setEnabled(false);
+        if (winner == InfoGame.Winner.CROSS) {
+            ImageIcon icon = new ImageIcon(
+                gameView.getIconX().getImage().getScaledInstance(
+                gameView.getIconX().getIconWidth()*2,gameView.getIconX().getIconHeight()*2, Image.SCALE_DEFAULT));
+            button.setIcon(icon);
+            button.setDisabledIcon(icon);
+        }
+        else if (winner == InfoGame.Winner.CIRCLE){
+            ImageIcon icon = new ImageIcon(
+                gameView.getIconO().getImage().getScaledInstance(
+                gameView.getIconO().getIconWidth()*2,gameView.getIconO().getIconHeight()*2, Image.SCALE_DEFAULT));
+            button.setIcon(icon);
+            button.setDisabledIcon(icon);
+        }
+        panel.add(button);
+        GameView.setJPanel(panel, id);
     }
 }

@@ -135,5 +135,21 @@ public class GameView extends JPanel {
     public static LinkedList<JPanel> getjPanels() {
         return jPanels;
     }
+
+    public static void setJPanel(JPanel jPanel, int index) {
+        GameView.jPanels.set(index, jPanel);
+        gameView.removeAll();
+        for(JPanel p : jPanels) {
+            gameView.add(p);
+        }
+    }
+
+    public ImageIcon getIconX(){
+        return iconX;
+    }
+
+    public ImageIcon getIconO(){
+        return iconO;
+    }
 }
 
