@@ -1,6 +1,5 @@
 package it.unical.informatica.studenti.View;
 
-import it.unical.informatica.studenti.Controller.GameController;
 import it.unical.informatica.studenti.Controller.GameStartController;
 import it.unical.informatica.studenti.Settings;
 
@@ -19,12 +18,24 @@ public class GameStartView {
 
         JPanel start = new JPanel();
 
+        JButton bStart = new JButton("Start");
 
         GameStartController gameStartController = new GameStartController(frame, start);
 
         start.addKeyListener(gameStartController);
         start.setFocusable(true);
 
+        bStart.addActionListener(gameStartController);
+
+        bStart.setPreferredSize(Settings.BUTTON_DIMENSION);
+        bStart.setSize(Settings.BUTTON_DIMENSION);
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenDimension = toolkit.getScreenSize();
+        int x = (screenDimension.width - bStart.getWidth()) / 2;
+        int y = (screenDimension.height - bStart.getHeight()) / 2;
+        start.add(bStart);
+        bStart.setLocation(x, y);
 
         JRootPane rootPane = frame.getRootPane();
         rootPane.putClientProperty("apple.awt.fullWindowContent", false);
