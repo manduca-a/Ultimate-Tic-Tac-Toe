@@ -19,24 +19,11 @@ public class GameStartView {
 
         JPanel start = new JPanel();
 
-        JButton bStart = new JButton("Start");
 
         GameStartController gameStartController = new GameStartController(frame, start);
 
-        start.addKeyListener(gameStartController);      // start game with Enter click
+        start.addKeyListener(gameStartController);
         start.setFocusable(true);
-
-        bStart.addActionListener(gameStartController);
-
-        bStart.setPreferredSize(Settings.BUTTON_DIMENSION);
-        bStart.setSize(Settings.BUTTON_DIMENSION);
-
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenDimension = toolkit.getScreenSize();
-        int x = (screenDimension.width - bStart.getWidth()) / 2;
-        int y = (screenDimension.height - bStart.getHeight()) / 2;
-        start.add(bStart);
-        bStart.setLocation(x, y);
 
 
         JRootPane rootPane = frame.getRootPane();
