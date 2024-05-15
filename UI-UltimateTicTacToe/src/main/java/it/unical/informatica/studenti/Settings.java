@@ -25,8 +25,9 @@ public class Settings {
         X(Color.BLUE),
         O(Color.RED),
         CURRENT_PLAYING(Color.GREEN),
-        LITTLE_LINES_COLOR(Color.LIGHT_GRAY),
-        BIG_LINES_COLOR(Color.DARK_GRAY);
+        LITTLE_LINES_COLOR(new Color(192,192,192)),
+        BIG_LINES_COLOR(Color.DARK_GRAY),
+        BUTTON_BACKGROUND(new Color(238,238,238));
 
 
 
