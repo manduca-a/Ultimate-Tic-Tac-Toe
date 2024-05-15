@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class GameView extends JPanel {
@@ -17,6 +18,11 @@ public class GameView extends JPanel {
     private static GameView gameView;
 
     private ImageIcon iconX, iconO;
+
+    private GridLayout bigGrid;
+    private static LinkedList<JPanel> jPanels;
+
+
 
     public GameView(JFrame frame) throws IOException {
         setBackground(Color.DARK_GRAY);
@@ -79,27 +85,26 @@ public class GameView extends JPanel {
         GridLayout bigGrid = new GridLayout(3, 3);
         gameView.setLayout(bigGrid);
 
+
+        jPanels = new LinkedList<>();
+
         try {
 
             for (int i = 0; i < 9; i++) {
 
                 GridLayout miniGrid = new GridLayout(3, 3);
                 JPanel p = new JPanel();
+                p.setName(String.valueOf(i));
                 p.setLayout(miniGrid);
-                p.setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
+                p.setBorder(BorderFactory.createLineBorder(Settings.State.CURRENT_PLAYING.getColor(), 5));
+                jPanels.add(p);
+
 
                 for (int j = 0; j < 9; j++) {
                     JButton button = new JButton();
                     button.setName(String.valueOf(i) + " " + String.valueOf(j));
                     button.addActionListener(controller);
                     ImageIcon icon;
-/*
-                    if (j % 2 == 0) {
-                        button.setIcon(iconX);
-                    } else {
-                        button.setIcon(iconO);
-                    }
-*/
 
                     button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
                     p.add(button);
@@ -126,62 +131,9 @@ public class GameView extends JPanel {
     public void setIconO(JButton o) {
         o.setIcon(iconO);
     }
-/*
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        //todo singleton of World to take the matrix -> World.getMatrix();
-        //todo take from World the isGameEnded()
 
-
-
-        int start = 1; int end = 3;
-
-        int worldSpace = frame.getWidth();
-
-        if(frame.getWidth() >= frame.getHeight()) {
-            worldSpace = frame.getHeight();
-        }
-
-
-
-        int startBigXLine = worldSpace/3;
-        int startBigYLine = 50;
-
-        int wBigLine = 10;
-        int hBigLine = worldSpace - startBigYLine*2;
-
-        int wMiniLine = 2;
-        int hMiniLine = ((worldSpace-100) / 3);
-
-        int arcRound = 8;
-
-
-        g.setColor(Settings.State.BIG_LINES_COLOR.getColor());
-
-        for(int i = start; i < end; i++) {
-            //verticale big
-            g.fillRoundRect(startBigXLine*i + wBigLine*(i-1), startBigYLine, wBigLine, hBigLine, arcRound, arcRound);
-
-            //orizzontale big
-            g.fillRoundRect(startBigYLine, startBigXLine*i + wBigLine*(i-1), hBigLine, wBigLine, arcRound, arcRound);
-
-            System.out.println("grandezza world: " + worldSpace);
-            System.out.println("fillRoundRect: " + (int)(startBigXLine*i + wBigLine*(i-1)));
-            System.out.println("di cui startBixXLine*i: " + startBigXLine*i);
-            System.out.println("di cui wBigline*i: " + wBigLine*(i-1));
-            System.out.println("-------------------------------------");
-            //for(int j = start; j < end; j++)
-                //verticale mini
-
-
-                //orizzontale mini
-
-            //}
-        }
-
-
+    public static LinkedList<JPanel> getjPanels() {
+        return jPanels;
     }
-
-*/
 }
+

@@ -1,11 +1,13 @@
 package it.unical.informatica.studenti.Controller;
 
+import it.unical.informatica.studenti.Settings;
 import it.unical.informatica.studenti.View.GameStartView;
 import it.unical.informatica.studenti.View.GameView;
 import it.unical.informatica.studenti.WorldGame;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class GameController extends KeyAdapter implements ActionListener {
 
@@ -31,6 +33,19 @@ public class GameController extends KeyAdapter implements ActionListener {
             if (value == 1) gameView.setIconX(o); else if (value == -1) gameView.setIconO(o);
             value *= -1;
         }
+
+        List<JPanel> jpanels = GameView.getjPanels();
+        for(int i = 0; i < 9; i++) {
+
+            if (worldGame.getBigBoard().getNextBoard() == i || worldGame.getBigBoard().getNextBoard() == -1) {
+                jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.CURRENT_PLAYING.getColor(), 5));
+            } else {
+                jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
+            }
+
+        }
+
+
     }
 
     @Override

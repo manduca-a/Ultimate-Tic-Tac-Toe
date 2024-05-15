@@ -3,8 +3,7 @@ package it.unical.informatica.studenti;
 import it.unical.informatica.studenti.View.GameStartView;
 import it.unical.informatica.studenti.View.GameView;
 
-public class Main
-{
+public class Main {
     public static void main( String[] args )
     {
         GameStartView.launch();
