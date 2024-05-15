@@ -5,7 +5,6 @@ import it.unical.informatica.studenti.Model.BigBoard;
 import it.unical.informatica.studenti.Model.EmbaspManager;
 import it.unical.informatica.studenti.Model.InfoGame;
 
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -33,7 +32,7 @@ public class WorldGame {
     }
 
     public void avviaCPU1vsCPU2(){
-        bigBoard.PrintGameBoard();
+        bigBoard.PrintSmallBoard();
         /*
         java.awt.EventQueue.invokeLater(() -> {
             new MatrixFrame().setVisible(true);
@@ -66,7 +65,7 @@ public class WorldGame {
                 bigBoard.UpdateBoardStatus(x, y, board, -1);
             }
             i+=1;
-            bigBoard.PrintGameBoard();
+            bigBoard.PrintSmallBoard();
             board = bigBoard.getNextBoard();*/
         }
     }

@@ -14,6 +14,8 @@ public class BigBoard {
 
     private final int[][] gameBoard = new int[3][3];
 
+    private final int[][] winnerBoard = new int[3][3];
+
     private int nextBoard = -1;
 
     public ArrayList<SmallBoard> getSmallBoards() {
@@ -38,6 +40,7 @@ public class BigBoard {
     public void UpdateBigBoard(int value, int id){
         if(gameBoard[id/3][id%3] == 0){
             gameBoard[id/3][id%3] = value;
+//            PrintGameBoard();
             switch (InfoGame.checkWinner(gameBoard)){
                 case CROSS -> {
                     BigBoardWinner = CROSS;
@@ -57,7 +60,17 @@ public class BigBoard {
             throw new RuntimeException("Invalid board");
     }
 
-    public void PrintGameBoard() {
+    private void PrintGameBoard() {
+        for(int i =0; i<3; i++){
+            for(int j=0; j<3; j++){
+                System.out.print(gameBoard[i][j]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    public void PrintSmallBoard() {
         for( int k=0; k<9; k++){
             System.out.println("Matrix di:"+k);
             for(int i =0; i<3; i++){
@@ -71,7 +84,6 @@ public class BigBoard {
     }
 
     public boolean UpdateBoardStatus(int i, int j, int boardIndex, int value) {
-
         if((nextBoard == -1 || nextBoard == boardIndex) && smallBoards.get(boardIndex).getSubBoard()[i][j] == 0 ){
             smallBoards.get(boardIndex).SetCell(i, j, value);
             if(smallBoards.get(3*i+j).GetWinner() == InfoGame.Winner.NOWINNER)

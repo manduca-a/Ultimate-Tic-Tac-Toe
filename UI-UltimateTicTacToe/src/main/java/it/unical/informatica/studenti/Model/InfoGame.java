@@ -1,17 +1,17 @@
 package it.unical.informatica.studenti.Model;
 
 public class InfoGame {
-    public enum Winner {CROSS,CIRCLE,DRAW, NOWINNER};
+    public enum Winner {CROSS,CIRCLE,DRAW, NOWINNER}
     public static Winner checkWinner(int[][] matrix){
         int counterRow = 0;
         int counterCols = 0;
-        int counterMajorD = 0;
+        int counterMajorD = matrix[2][2]+matrix[1][1]+matrix[0][0];
         int counterMinorD = matrix[0][2]+matrix[1][1]+matrix[2][0];
 
-        if(counterMinorD == 3){
+        if(counterMinorD == 3 || counterMajorD == 3){
             return  Winner.CROSS;
         }
-        else if(counterMinorD == -3) {
+        else if(counterMinorD == -3 || counterMajorD == -3) {
             return Winner.CIRCLE;
         }
 
@@ -21,20 +21,18 @@ public class InfoGame {
             for (int j =0 ; j<3; j++){
                 counterRow += matrix[i][j];
                 counterCols += matrix[j][i];
-                counterMajorD += matrix[j][j];
                 if(matrix[i][j] != 0){
                     moveCounter--;
                 }
             }
-            if( counterRow == 3 || counterCols == 3 || counterMajorD == 3){
+            if( counterRow == 3 || counterCols == 3){
                 return InfoGame.Winner.CROSS;
             }
-            else if (counterRow == -3 || counterCols == -3 || counterMajorD == -3 ){
+            else if (counterRow == -3 || counterCols == -3){
                 return  InfoGame.Winner.CIRCLE;
             }
             counterRow = 0;
             counterCols = 0;
-            counterMajorD = 0;
         }
 
         if(moveCounter == 0)
