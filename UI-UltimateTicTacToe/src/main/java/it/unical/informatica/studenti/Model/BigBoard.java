@@ -1,5 +1,7 @@
 package it.unical.informatica.studenti.Model;
 
+import it.unical.informatica.studenti.WorldGame;
+
 import java.util.ArrayList;
 
 import static it.unical.informatica.studenti.Model.InfoGame.Winner.*;
@@ -37,9 +39,18 @@ public class BigBoard {
         if(gameBoard[id/3][id%3] == 0){
             gameBoard[id/3][id%3] = value;
             switch (InfoGame.checkWinner(gameBoard)){
-                case CROSS -> {BigBoardWinner = CROSS;}
-                case CIRCLE -> {BigBoardWinner = CIRCLE;}
-                case DRAW -> {BigBoardWinner = DRAW;}
+                case CROSS -> {
+                    BigBoardWinner = CROSS;
+                    WorldGame.getInstance().getWinnerListener().onGameWinner(CROSS);
+                }
+                case CIRCLE -> {
+                    BigBoardWinner = CIRCLE;
+                    WorldGame.getInstance().getWinnerListener().onGameWinner(CIRCLE);
+                }
+                case DRAW -> {
+                    BigBoardWinner = DRAW;
+                    WorldGame.getInstance().getWinnerListener().onGameWinner(DRAW);
+                }
             }
         }
         else

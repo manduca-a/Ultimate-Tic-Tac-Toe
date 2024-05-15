@@ -4,6 +4,7 @@ import it.unical.informatica.studenti.Model.InfoGame;
 
 /**
  * Interface for the winner listener
+ * Manages both small board and big board winners
  */
 public interface WinnerListener {
     /**
@@ -13,4 +14,11 @@ public interface WinnerListener {
      * @see InfoGame.Winner
      */
     void onNewWinner(InfoGame.Winner winner, int id);
+
+    /**
+     * When a big board winner is detected, the method is called
+     * @param winner a number telling the winner
+     * @see InfoGame.Winner
+     */
+    void onGameWinner(InfoGame.Winner winner);
 }

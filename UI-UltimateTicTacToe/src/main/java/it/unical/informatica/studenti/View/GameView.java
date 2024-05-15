@@ -107,6 +107,7 @@ public class GameView extends JPanel {
                     ImageIcon icon;
 
                     button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
+                    button.setBackground(Settings.State.BUTTON_BACKGROUND.getColor());
                     p.add(button);
                 }
                 gameView.add(p);
@@ -127,9 +128,11 @@ public class GameView extends JPanel {
 
     public void setIconX(JButton o) {
         o.setIcon(iconX);
+        o.setDisabledIcon(iconX);
     }
     public void setIconO(JButton o) {
         o.setIcon(iconO);
+        o.setDisabledIcon(iconO);
     }
 
     public static LinkedList<JPanel> getjPanels() {
@@ -150,6 +153,14 @@ public class GameView extends JPanel {
 
     public ImageIcon getIconO(){
         return iconO;
+    }
+
+    public void disableAll() {
+        for(JPanel p : jPanels){
+            for(Component c : p.getComponents()){
+                c.setEnabled(false);
+            }
+        }
     }
 }
 

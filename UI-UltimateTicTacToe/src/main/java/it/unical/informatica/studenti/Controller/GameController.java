@@ -41,15 +41,17 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
         List<JPanel> jpanels = GameView.getjPanels();
         for(int i = 0; i < 9; i++) {
 
-            if (worldGame.getBigBoard().getNextBoard() == i || worldGame.getBigBoard().getNextBoard() == -1) {
+            // Sets the border green if it is the next board or if any board can be played when the game has no winner
+            if ((worldGame.getBigBoard().getBigBoardWinner() == InfoGame.Winner.NOWINNER
+                    && (worldGame.getBigBoard().getNextBoard() == i || worldGame.getBigBoard().getNextBoard() == -1))
+                // Highlights the winner small boards
+                || worldGame.getBigBoard().getBigBoardWinner() != InfoGame.Winner.NOWINNER && jpanels.get(i).getComponents().length == 1) {
                 jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.CURRENT_PLAYING.getColor(), 5));
             } else {
                 jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
             }
 
         }
-
-
     }
 
     @Override
@@ -91,5 +93,10 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
         }
         panel.add(button);
         GameView.setJPanel(panel, id);
+    }
+
+    @Override
+    public void onGameWinner(InfoGame.Winner winner) {
+        gameView.disableAll();
     }
 }
