@@ -47,7 +47,7 @@ public class EmbaspManager {
                 case Team2 -> {
                     return AddProgramTeamName(handler, program);
                 }
-                case Team3 -> {
+                case QueryQueens -> {
                     return AddProgramTeamName(handler, program);
                 }
                 //Ogni team implementa il proprio metodo EmbAsp
