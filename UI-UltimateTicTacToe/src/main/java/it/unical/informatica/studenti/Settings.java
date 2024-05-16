@@ -41,7 +41,8 @@ public class Settings {
 
     public enum Img {
         X(  "X.png"),
-        O("O.png");
+        O("O.png"),
+        Draw("-.png");
 
 
         private final String basepath = "/img/";

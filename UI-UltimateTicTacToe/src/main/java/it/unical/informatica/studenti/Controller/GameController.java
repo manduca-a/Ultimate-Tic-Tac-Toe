@@ -75,20 +75,22 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
         panel.setLayout(new GridLayout(1,1));
         JButton button = new JButton();
         button.setEnabled(false);
-        if (winner == InfoGame.Winner.CROSS) {
-            ImageIcon icon = new ImageIcon(
-                gameView.getIconX().getImage().getScaledInstance(
-                gameView.getIconX().getIconWidth()*2,gameView.getIconX().getIconHeight()*2, Image.SCALE_DEFAULT));
-            button.setIcon(icon);
-            button.setDisabledIcon(icon);
-        }
-        else if (winner == InfoGame.Winner.CIRCLE){
-            ImageIcon icon = new ImageIcon(
-                gameView.getIconO().getImage().getScaledInstance(
-                gameView.getIconO().getIconWidth()*2,gameView.getIconO().getIconHeight()*2, Image.SCALE_DEFAULT));
-            button.setIcon(icon);
-            button.setDisabledIcon(icon);
-        }
+
+        ImageIcon icon = switch (winner) {
+            case CROSS -> new ImageIcon(
+                    gameView.getIconX().getImage().getScaledInstance(
+                    gameView.getIconX().getIconWidth() * 2, gameView.getIconX().getIconHeight() * 2, Image.SCALE_DEFAULT));
+            case CIRCLE -> new ImageIcon(
+                    gameView.getIconO().getImage().getScaledInstance(
+                    gameView.getIconO().getIconWidth() * 2, gameView.getIconO().getIconHeight() * 2, Image.SCALE_DEFAULT));
+            case DRAW -> new ImageIcon(
+                    gameView.getIconDraw().getImage().getScaledInstance(
+                    gameView.getIconDraw().getIconWidth() * 2, gameView.getIconDraw().getIconHeight() * 2, Image.SCALE_DEFAULT));
+            default -> null;
+        };
+        button.setIcon(icon);
+        button.setDisabledIcon(icon);
+
         panel.add(button);
         GameView.setJPanel(panel, id);
     }

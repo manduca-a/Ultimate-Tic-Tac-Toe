@@ -17,7 +17,7 @@ public class GameView extends JPanel {
     private JFrame frame;
     private static GameView gameView;
 
-    private ImageIcon iconX, iconO;
+    private ImageIcon iconX, iconO, iconDraw;
 
     private GridLayout bigGrid;
     private static LinkedList<JPanel> jPanels;
@@ -34,8 +34,12 @@ public class GameView extends JPanel {
         Image imgO = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.O.getPath())));
         Image imgOScaled = imgO.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
 
+        Image imgDraw = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.Draw.getPath())));
+        Image imgDrawScaled = imgDraw.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
+
         iconX = new ImageIcon(imgXScaled);
         iconO = new ImageIcon(imgOScaled);
+        iconDraw = new ImageIcon(imgDrawScaled);
     }
 
     public static void launch(JFrame frame, JPanel oldView) throws IOException {
@@ -153,6 +157,10 @@ public class GameView extends JPanel {
 
     public ImageIcon getIconO(){
         return iconO;
+    }
+
+    public ImageIcon getIconDraw(){
+        return iconDraw;
     }
 
     public void disableAll() {
