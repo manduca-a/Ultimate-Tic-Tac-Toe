@@ -1,5 +1,5 @@
 package it.unical.informatica.studenti;
 
 public enum Teams {
-    CHATCM,Team2,QueryQueens
+    CHATCM,GM,QueryQueens
 }

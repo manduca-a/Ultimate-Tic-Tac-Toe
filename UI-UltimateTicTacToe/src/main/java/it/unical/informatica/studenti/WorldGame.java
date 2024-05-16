@@ -1,10 +1,14 @@
 package it.unical.informatica.studenti;
 
+import it.unical.informatica.studenti.Controller.GameController;
 import it.unical.informatica.studenti.Controller.WinnerListener;
 import it.unical.informatica.studenti.Model.BigBoard;
 import it.unical.informatica.studenti.Model.EmbaspManager;
 import it.unical.informatica.studenti.Model.InfoGame;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -14,11 +18,23 @@ public class WorldGame {
 
     private static WorldGame instance = null;
 
+    private boolean status;
+
+    private JFrame frame;
+
     public static WorldGame getInstance(){
         if(instance == null){
             instance = new WorldGame();
         }
         return instance;
+    }
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     private BigBoard bigBoard;
@@ -31,42 +47,30 @@ public class WorldGame {
         bigBoard =new BigBoard();
     }
 
-    public void avviaCPU1vsCPU2(){
-        bigBoard.PrintSmallBoard();
-        /*
-        java.awt.EventQueue.invokeLater(() -> {
-            new MatrixFrame().setVisible(true);
-        });
-
-         */
-        Scanner in = new Scanner(System.in);
+    public void avviaIAvsIA(){
+        boolean ia = chiInizia();// true è la prima, false è la seconda
         int i = 0;
-        int board = -1, x = -1, y = -1;
         while(bigBoard.getBigBoardWinner() == InfoGame.Winner.NOWINNER){
-            if( i % 2 == 0){
-                //funzione che esegue ASP (Team1) e fa doClick sul button corrispettivo
-            }
-            else {
-                //funzione che esegue ASP (Team2) e fa doClick sul button corrispettivo
-            }
-            /*System.out.println("Turno: " +i);
-            System.out.println("Griglia:" + board);
-            if (i == 0 || board == -1){
-                System.out.println("Decidi la cella");
-                board = in.nextInt();
-            }
-            System.out.println("X:");
-            x = in.nextInt();
-            System.out.println("Y:");
-            y = in.nextInt();
-            if(i%2 == 0){
-                bigBoard.UpdateBoardStatus(x, y, board, 1);
+            if(ia){
+                //ArrayList<Integer> coordinate = EmbaspManager.avviaASP(Teams.CHATCM); //da cambiare il team
+                /*
+                Mario perchè l'hai fatto!!!
+                (i == 0){
+                    for(Component e : component){
+                        System.out.println(e.getName());
+                        JPanel panel = (JPanel) e.getComponentAt( board/3, board%3);
+                        System.out.println("Nome pannello: " + panel.getName());
+                        JButton btn = (JButton) panel.getComponents()[0].getComponentAt(0,0);
+                        System.out.println("Nome bottone: " + btn.getName());
+                    }
+                    i++;
+                }*/
+
             }else{
-                bigBoard.UpdateBoardStatus(x, y, board, -1);
+                //ArrayList<Integer> coordinate = EmbaspManager.avviaASP(Teams.GM); //da cambiare il team
+
             }
-            i+=1;
-            bigBoard.PrintSmallBoard();
-            board = bigBoard.getNextBoard();*/
+            ia = !ia;
         }
     }
 
@@ -74,7 +78,16 @@ public class WorldGame {
         Random random = new Random();
         int starting = random.nextInt(0,2);
         if( starting == 0)
-            EmbaspManager.avviaASP(Teams.Team2); //da cambiare in base a quale team deve giocare come IA
+            EmbaspManager.avviaASP(Teams.GM); //da cambiare in base a quale team deve giocare come IA
+
+    }
+
+    public boolean chiInizia (){
+        Random random = new Random();
+        int starting = random.nextInt(0,2);
+        if( starting == 0)
+            return true;
+        return false;
     }
 
     public void resetBoard(){
@@ -87,5 +100,16 @@ public class WorldGame {
 
     public WinnerListener getWinnerListener() {
         return winnerListener;
+    }
+
+    public void setFrame(JFrame frame){
+        this.frame = frame;
+    }
+
+    public JFrame getFrame(){
+        if(frame == null){
+            frame = new JFrame();
+        }
+        return frame;
     }
 }

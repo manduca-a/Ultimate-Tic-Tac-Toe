@@ -2,6 +2,7 @@ package it.unical.informatica.studenti.View;
 
 import it.unical.informatica.studenti.Controller.GameController;
 import it.unical.informatica.studenti.Settings;
+import it.unical.informatica.studenti.WorldGame;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

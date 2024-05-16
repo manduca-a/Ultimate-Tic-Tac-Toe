@@ -1,6 +1,7 @@
 package it.unical.informatica.studenti.Controller;
 
 import it.unical.informatica.studenti.View.GameView;
+import it.unical.informatica.studenti.WorldGame;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -33,6 +34,13 @@ public class GameStartController extends KeyAdapter implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
+            JButton o = (JButton)e.getSource();
+            if(o.getText().equals("IA VS IA")){
+                //WorldGame.getInstance().setPlayerVsIA(false);
+                WorldGame.getInstance().avviaIAvsIA();
+            }else if (o.getText().equals("Player VS IA")){
+                //WorldGame.getInstance().setPlayerVsIA(true);
+            }
             GameView.launch(frame, panel);
         } catch (IOException ex) {
             throw new RuntimeException(ex);

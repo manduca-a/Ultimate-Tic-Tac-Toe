@@ -44,7 +44,7 @@ public class EmbaspManager {
                 case CHATCM -> {
                     return ASPChatCM(handler, program);
                 }
-                case Team2 -> {
+                case GM -> {
                     return AddProgramTeamName(handler, program);
                 }
                 case QueryQueens -> {

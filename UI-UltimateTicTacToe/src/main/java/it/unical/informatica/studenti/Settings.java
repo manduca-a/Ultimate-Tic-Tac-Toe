@@ -6,7 +6,6 @@ public class Settings {
 
     public static final String APP_NAME = "Ultimate Tic Tac Toe";
 
-
     public static final int WORLD_SIZE = 20;
     public static final int WINDOWS_GAMEVIEW_SIZE = 800;
 
@@ -18,7 +17,6 @@ public class Settings {
     public static final int WINDOWS_GAMESTART_HEIGHT = 600;
 
     public static final Dimension BUTTON_DIMENSION = new Dimension(200, 50);
-
 
 
     public enum State {
