@@ -36,7 +36,7 @@ public class EmbaspManager {
             OptionDescriptor option = new OptionDescriptor("-n 1");
             handler.addOption(option);
             InputProgram program = new ASPInputProgram();
-            program.addFilesPath("/encodings/" + team);
+            program.addFilesPath("/EmbASP/encodings/" + team);
             //Attenzione i file dentro encodings devono assumere il medesimo valore dell'enum per essere presi
             //(o almeno dovrebbe essere così, da testare)
 

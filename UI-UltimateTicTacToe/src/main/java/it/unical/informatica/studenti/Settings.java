@@ -1,6 +1,7 @@
 package it.unical.informatica.studenti;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Settings {
 
@@ -18,6 +19,11 @@ public class Settings {
 
     public static final Dimension BUTTON_DIMENSION = new Dimension(200, 50);
 
+    public static Teams[] TeamsPlaying = {Teams.CHATCM,Teams.GM};
+
+    public static Teams IAPlayingVsPLayer = Teams.CHATCM;
+
+    public enum  GameMode {PlayerVsIA,IAVsIA}
 
     public enum State {
         X(Color.BLUE),

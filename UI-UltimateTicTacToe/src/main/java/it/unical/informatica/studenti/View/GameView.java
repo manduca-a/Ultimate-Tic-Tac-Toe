@@ -23,8 +23,6 @@ public class GameView extends JPanel {
     private GridLayout bigGrid;
     private static LinkedList<JPanel> jPanels;
 
-
-
     public GameView(JFrame frame) throws IOException {
         setBackground(Color.DARK_GRAY);
         this.frame = frame;
@@ -52,8 +50,6 @@ public class GameView extends JPanel {
 
         GameController controller = new GameController(frame, view);
 
-        view.addKeyListener(controller);
-
         frame.add(view);
 
         GameFrame.frameSettings(frame);
@@ -61,8 +57,6 @@ public class GameView extends JPanel {
         JRootPane rootPane = frame.getRootPane();
         rootPane.putClientProperty("apple.awt.fullWindowContent", true);
         rootPane.putClientProperty("apple.awt.transparentTitleBar", true);
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.addComponentListener(new ComponentAdapter() {
             @Override
@@ -142,6 +136,10 @@ public class GameView extends JPanel {
 
     public static LinkedList<JPanel> getjPanels() {
         return jPanels;
+    }
+
+    public static JButton getButton(int i, int j, int id){
+        return (JButton) jPanels.get(id).getComponent(i*3+j);
     }
 
     public static void setJPanel(JPanel jPanel, int index) {

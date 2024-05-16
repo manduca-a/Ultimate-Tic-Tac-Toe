@@ -14,3 +14,7 @@
 # Maven
 log/
 target/
+
+# Other
+
+src/main/resources/EmbASP/encodings/*

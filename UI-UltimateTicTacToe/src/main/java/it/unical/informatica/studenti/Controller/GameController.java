@@ -1,25 +1,27 @@
 package it.unical.informatica.studenti.Controller;
 
 
+import it.unical.informatica.studenti.Model.EmbaspManager;
 import it.unical.informatica.studenti.Settings;
 import it.unical.informatica.studenti.Model.InfoGame;
-import it.unical.informatica.studenti.View.GameStartView;
 import it.unical.informatica.studenti.View.GameView;
 import it.unical.informatica.studenti.WorldGame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class GameController extends KeyAdapter implements ActionListener, WinnerListener {
+public class GameController implements ActionListener, WinnerListener {
 
-    private final JFrame jFrame;
     private final GameView gameView;
     private final WorldGame worldGame = WorldGame.getInstance();
-    private int value = 1; // X = 1, O = -1
+
+    private boolean firstMove = true;
+
+    private int UserToPlay = 1; // X = 1, O = -1
     public GameController(JFrame frame, GameView view) {
-        this.jFrame = frame;
         this.gameView = view;
         worldGame.addWinnerListener(this);
     }
@@ -33,9 +35,40 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
         int rowSmallBoard = indSmallBoard / 3;
         int colSmallBoard = indSmallBoard % 3;
 
-        if (worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, value)) {
-            if (value == 1) gameView.setIconX(o); else if (value == -1) gameView.setIconO(o);
-            value *= -1;
+        switch (worldGame.getCurrentGameMode()){
+            case IAVsIA -> MoveIAvsIA(o,indBigBoard,rowSmallBoard,colSmallBoard);
+            case PlayerVsIA -> MovePlayerVsIA(o,indBigBoard,rowSmallBoard,colSmallBoard);
+        }
+
+    }
+
+    private void MovePlayerVsIA(JButton o,int id, int i , int j){
+        if(worldGame.isIACalling() && !firstMove){
+            WorldGame.getInstance().setIACalling(false);
+            return;
+        }
+
+        DoMove(o,id,i,j);
+
+        if(!worldGame.isIACalling()) {
+            worldGame.setIACalling(true);
+            ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer);
+            GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
+        }
+    }
+
+    private void MoveIAvsIA(JButton o, int i, int j, int id){
+        //TO DO: definire come fare il flow per IA vs IA
+        //DoMove(o,i,j,id);
+    }
+
+    private void DoMove(JButton o,int indBigBoard, int rowSmallBoard, int colSmallBoard){
+        if(firstMove)
+            firstMove = false;
+
+        if (worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, UserToPlay)) {
+            if (UserToPlay == 1) gameView.setIconX(o); else if (UserToPlay == -1) gameView.setIconO(o);
+            UserToPlay *= -1;
         }
 
         List<JPanel> jpanels = GameView.getjPanels();
@@ -48,25 +81,7 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
             } else {
                 jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
             }
-
         }
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            GameStartView.launch(jFrame, gameView);
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
     }
 
     @Override
