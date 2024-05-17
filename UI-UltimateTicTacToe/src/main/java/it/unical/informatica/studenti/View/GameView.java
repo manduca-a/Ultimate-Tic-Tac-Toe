@@ -140,6 +140,10 @@ public class GameView extends JPanel {
         return jPanels;
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
     public static JButton getButton(int i, int j, int id){
         return (JButton) jPanels.get(id).getComponent(i*3+j);
     }

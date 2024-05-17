@@ -26,7 +26,7 @@ public class GameController implements ActionListener, WinnerListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        JButton o = (JButton)e.getSource();
+        JButton o = (JButton) e.getSource();
         String[] indexes = o.getName().split("\\s+");
         int indBigBoard = Integer.parseInt(indexes[0]);
         int indSmallBoard = Integer.parseInt(indexes[1]);
@@ -44,27 +44,38 @@ public class GameController implements ActionListener, WinnerListener {
         DoMove(o,id,i,j);
 
         if(!worldGame.isIACalling()) {
-            worldGame.setIACalling(true);
-            ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer);
-            GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
+            SwingUtilities.invokeLater( () -> {
+                try {
+                    Thread.sleep(1200);
+                    worldGame.setIACalling(true);
+                    ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer);
+                    GameView.getButton(coords.get(0), coords.get(1), coords.get(2)).doClick();
+                }
+                catch (Exception ignored) {}
+            });
         }
         else
             WorldGame.getInstance().setIACalling(false);
     }
 
     private void MoveIAvsIA(JButton o, int i, int j, int id){
-        //TO DO: definire come fare il flow per IA vs IA
+
         DoMove(o,i,j,id);
 
-
-        for(int v =0; v<2; v++){
-            if(!worldGame.getIAStartingPlaying()[v]) {
-                worldGame.SwapIAPlaying();
-                ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[v]);
-                GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
-                return;
+        SwingUtilities.invokeLater( () -> {
+            try {
+                Thread.sleep(1600);
+                for (int v = 0; v < 2; v++) {
+                    if (!worldGame.getIAStartingPlaying()[v]) {
+                        worldGame.SwapIAPlaying();
+                        ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[v]);
+                        GameView.getButton(coords.get(0), coords.get(1), coords.get(2)).doClick();
+                        return;
+                    }
+                }
             }
-        }
+            catch (Exception ignored){}
+        });
     }
 
     private void DoMove(JButton o,int indBigBoard, int rowSmallBoard, int colSmallBoard){
@@ -125,4 +136,6 @@ public class GameController implements ActionListener, WinnerListener {
     public void onGameWinner(InfoGame.Winner winner) {
         gameView.disableAll();
     }
+
 }
+
