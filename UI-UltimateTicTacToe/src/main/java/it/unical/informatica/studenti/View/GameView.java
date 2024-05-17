@@ -23,6 +23,8 @@ public class GameView extends JPanel {
     private GridLayout bigGrid;
     private static LinkedList<JPanel> jPanels;
 
+    //TO DO: AGGIUNGERE DISPLAY PER CAPIRE CHI DEVE GIOCARE E ALERT PER QUANDO IL GIOCO FINISCE
+
     public GameView(JFrame frame) throws IOException {
         setBackground(Color.DARK_GRAY);
         this.frame = frame;

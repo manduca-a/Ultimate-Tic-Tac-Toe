@@ -21,7 +21,6 @@ public class GameStartView {
         JButton bIAvsIA = new JButton("IA VS IA");
         JButton bPvsIA = new JButton("Player VS IA");
 
-
         //JLabel TeamsPlaying = new JLabel(Settings.TeamsPlaying[0] +" VS "+Settings.TeamsPlaying[1]);
 
         GameStartController gameStartController = new GameStartController(frame, startPanel);

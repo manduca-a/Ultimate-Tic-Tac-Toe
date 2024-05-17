@@ -6,6 +6,7 @@ import it.unical.informatica.studenti.Model.EmbaspManager;
 import it.unical.informatica.studenti.View.GameView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class WorldGame {
@@ -20,6 +21,8 @@ public class WorldGame {
 
     private boolean IACalling = false;
 
+    private boolean[] IAStartingPlaying = new boolean[2];
+
     public static WorldGame getInstance(){
         if(instance == null){
             instance = new WorldGame();
@@ -33,8 +36,17 @@ public class WorldGame {
         return UserToPlay;
     }
 
-    public void setUserToPlay() {
+    public void AlternateUserToPlay() {
         UserToPlay *= -1;
+    }
+
+    public boolean[] getIAStartingPlaying() {
+        return IAStartingPlaying;
+    }
+
+    public void SwapIAPlaying() {
+        IAStartingPlaying[0] = !IAStartingPlaying[0];
+        IAStartingPlaying[1] = !IAStartingPlaying[1];
     }
 
     public boolean isIACalling() {
@@ -61,6 +73,16 @@ public class WorldGame {
         CurrentGameMode = Settings.GameMode.IAVsIA;
         if(chiInizia()){
             //TO DO : fare IA vs IA
+            IAStartingPlaying[0] = true;
+            IAStartingPlaying[1] = false;
+            ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[0]);
+            GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
+        }
+        else{
+            IAStartingPlaying[0] = false;
+            IAStartingPlaying[1] = true;
+            ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[1]);
+            GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
         }
     }
 

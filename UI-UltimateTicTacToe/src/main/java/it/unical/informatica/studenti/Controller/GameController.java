@@ -25,6 +25,7 @@ public class GameController implements ActionListener, WinnerListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         JButton o = (JButton)e.getSource();
         String[] indexes = o.getName().split("\\s+");
         int indBigBoard = Integer.parseInt(indexes[0]);
@@ -36,7 +37,6 @@ public class GameController implements ActionListener, WinnerListener {
             case IAVsIA -> MoveIAvsIA(o,indBigBoard,rowSmallBoard,colSmallBoard);
             case PlayerVsIA -> MovePlayerVsIA(o,indBigBoard,rowSmallBoard,colSmallBoard);
         }
-
     }
 
     private void MovePlayerVsIA(JButton o,int id, int i , int j){
@@ -48,21 +48,30 @@ public class GameController implements ActionListener, WinnerListener {
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer);
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
         }
-        else{
+        else
             WorldGame.getInstance().setIACalling(false);
-        }
     }
 
     private void MoveIAvsIA(JButton o, int i, int j, int id){
         //TO DO: definire come fare il flow per IA vs IA
-        //DoMove(o,i,j,id);
+        DoMove(o,i,j,id);
+
+
+        for(int v =0; v<2; v++){
+            if(!worldGame.getIAStartingPlaying()[v]) {
+                worldGame.SwapIAPlaying();
+                ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[v]);
+                GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
+                return;
+            }
+        }
     }
 
     private void DoMove(JButton o,int indBigBoard, int rowSmallBoard, int colSmallBoard){
 
         if (worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, worldGame.getUserToPlay())) {
             if (worldGame.getUserToPlay() == 1) gameView.setIconX(o); else if (worldGame.getUserToPlay() == -1) gameView.setIconO(o);
-            worldGame.setUserToPlay();
+            worldGame.AlternateUserToPlay();
         }
 
         List<JPanel> jpanels = GameView.getjPanels();
