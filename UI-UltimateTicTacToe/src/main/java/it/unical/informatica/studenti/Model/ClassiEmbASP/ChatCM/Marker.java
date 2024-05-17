@@ -13,8 +13,14 @@ public class Marker {
         return marker;
     }
 
+    public void setMarker(int marker) {
+        this.marker = marker;
+    }
+
     public Marker(int mark) {
         marker = mark;
     }
+
+    public Marker(){}
 
 }

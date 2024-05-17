@@ -14,6 +14,7 @@ public class WorldGame {
 
     private static WorldGame instance = null;
 
+    private int UserToPlay = 1; // X = 1, O = -1
 
     private Settings.GameMode CurrentGameMode;
 
@@ -27,6 +28,14 @@ public class WorldGame {
     }
 
     private BigBoard bigBoard;
+
+    public int getUserToPlay() {
+        return UserToPlay;
+    }
+
+    public void setUserToPlay() {
+        UserToPlay *= -1;
+    }
 
     public boolean isIACalling() {
         return IACalling;
@@ -51,7 +60,7 @@ public class WorldGame {
     public void avviaIAvsIA(){
         CurrentGameMode = Settings.GameMode.IAVsIA;
         if(chiInizia()){
-
+            //TO DO : fare IA vs IA
         }
     }
 
@@ -64,10 +73,9 @@ public class WorldGame {
         }
     }
 
-    public boolean chiInizia (){
+    private boolean chiInizia(){
         Random random = new Random();
         int starting = random.nextInt(0,2);
-        System.out.println(starting);
         return starting == 0;
     }
 

@@ -22,19 +22,37 @@ public class FullCell {
         marker = mark;
     }
 
+    public FullCell(){}
+
     public int getI() {
         return i;
+    }
+
+    public void setI(int i) {
+        this.i = i;
     }
 
     public int getJ() {
         return j;
     }
 
+    public void setJ(int j) {
+        this.j = j;
+    }
+
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getMarker() {
         return marker;
+    }
+
+    public void setMarker(int marker) {
+        this.marker = marker;
     }
 }

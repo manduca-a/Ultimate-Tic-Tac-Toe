@@ -9,8 +9,14 @@ public class GridToPlay {
     @Param(0)
     private int idGrid;
 
+    public GridToPlay(){}
+
     public GridToPlay(int id) {
         idGrid = id;
+    }
+
+    public void setIdGrid(int idGrid) {
+        this.idGrid = idGrid;
     }
 
     public int getIdGrid() {

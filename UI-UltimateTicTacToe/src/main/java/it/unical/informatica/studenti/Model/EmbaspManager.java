@@ -1,9 +1,6 @@
 package it.unical.informatica.studenti.Model;
 
-import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.EmptyCell;
-import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.FullCell;
-import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.GridToPlay;
-import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.InsertMarker;
+import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.*;
 import it.unical.informatica.studenti.OsCheck;
 import it.unical.informatica.studenti.Teams;
 import it.unical.informatica.studenti.WorldGame;
@@ -26,9 +23,9 @@ public class EmbaspManager {
     public static ArrayList<Integer> avviaASP(Teams team){
         try {
             DesktopService service = switch (OsCheck.getOperatingSystemType()) {
-                case Windows -> new DLV2DesktopService("/EmbASP/dlv2_win64.exe");
-                case MacOS -> new DLV2DesktopService("/EmbASP/dlv2_linux");
-                case Linux -> new DLV2DesktopService("/EmbASP/dlv2_macOS.exe"); //da inserire ora non lo trovo
+                case Windows -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_win64.exe");
+                case MacOS -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_linux");
+                case Linux -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_macOS.exe"); //da inserire ora non lo trovo
                 default -> throw new Exception("No DLV for this OS.");
             };
 
@@ -36,7 +33,7 @@ public class EmbaspManager {
             OptionDescriptor option = new OptionDescriptor("-n 1");
             handler.addOption(option);
             InputProgram program = new ASPInputProgram();
-            program.addFilesPath("/EmbASP/encodings/" + team);
+            program.addFilesPath("src/main/resources/EmbASP/encodings/" + team);
             //Attenzione i file dentro encodings devono assumere il medesimo valore dell'enum per essere presi
             //(o almeno dovrebbe essere così, da testare)
 
@@ -123,39 +120,31 @@ public class EmbaspManager {
                 }
             }
         }
+        program.addObjectInput(new Marker(WorldGame.getInstance().getUserToPlay()));
         program.addObjectInput(new GridToPlay(WorldGame.getInstance().getBigBoard().getNextBoard()));
         //eventuali altri predicati da aggiungere da input
 
         handler.addProgram(program);
-        System.out.println(program.getPrograms());
         Output output = handler.startSync();
         ASPMapper.getInstance().registerClass(InsertMarker.class);
 
         AnswerSets answersets = (AnswerSets) output;
 
-        InsertMarker marker = null;
+        InsertMarker marker;
 
-        for(AnswerSet a: answersets.getOptimalAnswerSets()){
-            System.out.println(a.toString());
+        for(AnswerSet a: answersets.getAnswersets()){ //getOptimalAnswerSet da usare
             try {
                 for(Object obj:a.getAtoms()){
                     if(!(obj instanceof InsertMarker)) continue;
                     marker = (InsertMarker) obj;
-                    //Scartiamo tutto ci� che non � un oggetto della classe Cell
-                    //if(!(obj instanceof InCricca)) continue;
-                    //Convertiamo in un oggetto della classe Cell e impostiamo il valore di ogni cella
-                    //nella matrice rappresentante la griglia del Sudoku
-                    //InCricca c= (InCricca) obj;
-                    //elements.add(c.toString());
-                    //System.out.println("cricca dim "+ elements.size() );
+                    return marker.getInsertData();
                 }
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        return marker.getInsertData();
+        return null;
     }
 
 }

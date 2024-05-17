@@ -18,9 +18,6 @@ public class GameController implements ActionListener, WinnerListener {
     private final GameView gameView;
     private final WorldGame worldGame = WorldGame.getInstance();
 
-    private boolean firstMove = true;
-
-    private int UserToPlay = 1; // X = 1, O = -1
     public GameController(JFrame frame, GameView view) {
         this.gameView = view;
         worldGame.addWinnerListener(this);
@@ -43,10 +40,6 @@ public class GameController implements ActionListener, WinnerListener {
     }
 
     private void MovePlayerVsIA(JButton o,int id, int i , int j){
-        if(worldGame.isIACalling() && !firstMove){
-            WorldGame.getInstance().setIACalling(false);
-            return;
-        }
 
         DoMove(o,id,i,j);
 
@@ -54,6 +47,9 @@ public class GameController implements ActionListener, WinnerListener {
             worldGame.setIACalling(true);
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer);
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
+        }
+        else{
+            WorldGame.getInstance().setIACalling(false);
         }
     }
 
@@ -63,12 +59,10 @@ public class GameController implements ActionListener, WinnerListener {
     }
 
     private void DoMove(JButton o,int indBigBoard, int rowSmallBoard, int colSmallBoard){
-        if(firstMove)
-            firstMove = false;
 
-        if (worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, UserToPlay)) {
-            if (UserToPlay == 1) gameView.setIconX(o); else if (UserToPlay == -1) gameView.setIconO(o);
-            UserToPlay *= -1;
+        if (worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, worldGame.getUserToPlay())) {
+            if (worldGame.getUserToPlay() == 1) gameView.setIconX(o); else if (worldGame.getUserToPlay() == -1) gameView.setIconO(o);
+            worldGame.setUserToPlay();
         }
 
         List<JPanel> jpanels = GameView.getjPanels();
@@ -78,10 +72,18 @@ public class GameController implements ActionListener, WinnerListener {
             if ((worldGame.getBigBoard().getBigBoardWinner() == InfoGame.Winner.NOWINNER
                     && (worldGame.getBigBoard().getNextBoard() == i || worldGame.getBigBoard().getNextBoard() == -1))) {
                 jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.CURRENT_PLAYING.getColor(), 5));
+                for( Component b : jpanels.get(i).getComponents()){
+                    if(jpanels.get(i).getComponents().length != 1)
+                        b.setEnabled(true);
+                }
             } else {
                 jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
+                for( Component b : jpanels.get(i).getComponents()){
+                    b.setEnabled(false);
+                }
             }
         }
+        o.setEnabled(false);
     }
 
     @Override
