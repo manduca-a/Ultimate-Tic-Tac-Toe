@@ -25,7 +25,7 @@ public class EmbaspManager {
             DesktopService service = switch (OsCheck.getOperatingSystemType()) {
                 case Windows -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_win64.exe");
                 case MacOS -> new DLV2DesktopService("src/main/resources/EmbASP/dlv-2.1.2-arm64");
-                case Linux -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_macOS.exe"); //da inserire ora non lo trovo
+                case Linux -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_macOS.exe");
                 default -> throw new Exception("No DLV for this OS.");
             };
 
