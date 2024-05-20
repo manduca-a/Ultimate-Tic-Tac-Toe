@@ -16,4 +16,5 @@ log/
 target/
 
 # Other
-/src/main/resources/EmbASP/encodings/*
+main/resources/EmbASP/encodings/
+main/java/it.unical.informatica.studenti/Model/ClassiEmbASP.ChatCM/

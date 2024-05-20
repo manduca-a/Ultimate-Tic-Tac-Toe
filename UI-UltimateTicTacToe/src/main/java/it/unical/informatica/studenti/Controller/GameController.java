@@ -91,7 +91,12 @@ public class GameController implements ActionListener, WinnerListener {
             // Sets the border green if it is the next board or if any board can be played when the game has no winner
             if ((worldGame.getBigBoard().getBigBoardWinner() == InfoGame.Winner.NOWINNER
                     && (worldGame.getBigBoard().getNextBoard() == i || worldGame.getBigBoard().getNextBoard() == -1))) {
-                jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.CURRENT_PLAYING.getColor(), 5));
+                if (worldGame.getUserToPlay() == 1) {
+                    // X = 1, O = -1
+                    jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.O.getColor(), 5));
+                } else {
+                    jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.X.getColor(), 5));
+                }
                 for( Component b : jpanels.get(i).getComponents()){
                     if(jpanels.get(i).getComponents().length != 1)
                         b.setEnabled(true);
