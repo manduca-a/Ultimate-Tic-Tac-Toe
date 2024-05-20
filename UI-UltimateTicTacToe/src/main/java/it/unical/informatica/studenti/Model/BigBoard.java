@@ -2,6 +2,7 @@ package it.unical.informatica.studenti.Model;
 
 import it.unical.informatica.studenti.WorldGame;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static it.unical.informatica.studenti.Model.InfoGame.Winner.*;
@@ -37,7 +38,7 @@ public class BigBoard {
         }
     }
 
-    public void UpdateBigBoard(int value, int id){
+    public void UpdateBigBoard(int value, int id) {
         if(gameBoard[id/3][id%3] == 0){
             gameBoard[id/3][id%3] = value;
 //            PrintGameBoard();

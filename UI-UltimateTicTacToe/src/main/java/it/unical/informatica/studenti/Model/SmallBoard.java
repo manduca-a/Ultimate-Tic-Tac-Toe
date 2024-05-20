@@ -2,6 +2,8 @@ package it.unical.informatica.studenti.Model;
 
 import it.unical.informatica.studenti.WorldGame;
 
+import java.io.IOException;
+
 public class SmallBoard {
 
     private final int[][] subBoard =new int[3][3];
@@ -35,7 +37,7 @@ public class SmallBoard {
         }
     }
 
-    public void SetCell(int i, int j, int value){
+    public void SetCell(int i, int j, int value) {
         if (subBoard[i][j] == 0) {
             subBoard[i][j] = value;
             switch (InfoGame.checkWinner(subBoard)) {

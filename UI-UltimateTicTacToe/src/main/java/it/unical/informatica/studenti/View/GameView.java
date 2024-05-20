@@ -18,12 +18,11 @@ public class GameView extends JPanel {
     private JFrame frame;
     private static GameView gameView;
 
-    private ImageIcon iconX, iconO, iconDraw;
+    private final ImageIcon iconX, iconO, iconDraw;
 
-    private GridLayout bigGrid;
     private static LinkedList<JPanel> jPanels;
 
-    //TO DO: AGGIUNGERE DISPLAY PER CAPIRE CHI DEVE GIOCARE E ALERT PER QUANDO IL GIOCO FINISCE
+    //TODO: AGGIUNGERE DISPLAY PER CAPIRE CHI DEVE GIOCARE E ALERT PER QUANDO IL GIOCO FINISCE
 
     public GameView(JFrame frame) throws IOException {
         setBackground(Color.DARK_GRAY);
@@ -46,6 +45,7 @@ public class GameView extends JPanel {
     public static void launch(JFrame frame, JPanel oldView) throws IOException {
         frame.remove(oldView);
         frame.setSize(Settings.WINDOWS_GAMEVIEW_SIZE, Settings.WINDOWS_GAMEVIEW_SIZE);
+
 
         GameView view = new GameView(frame);
         gameView = view;
@@ -118,9 +118,11 @@ public class GameView extends JPanel {
             System.out.println(e);
         }
 
+
         frame.setVisible(true);
         view.setFocusable(true);
         view.requestFocus();
+
     }
 
     public static GameView getGameview() {

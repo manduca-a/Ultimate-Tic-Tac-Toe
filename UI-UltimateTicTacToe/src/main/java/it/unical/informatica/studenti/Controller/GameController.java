@@ -5,20 +5,24 @@ import it.unical.informatica.studenti.Model.EmbaspManager;
 import it.unical.informatica.studenti.Settings;
 import it.unical.informatica.studenti.Model.InfoGame;
 import it.unical.informatica.studenti.View.GameView;
+import it.unical.informatica.studenti.View.GameWinView;
 import it.unical.informatica.studenti.WorldGame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameController implements ActionListener, WinnerListener {
 
+    private JFrame frame;
     private final GameView gameView;
     private final WorldGame worldGame = WorldGame.getInstance();
 
     public GameController(JFrame frame, GameView view) {
+        this.frame = frame;
         this.gameView = view;
         worldGame.addWinnerListener(this);
     }
@@ -64,7 +68,7 @@ public class GameController implements ActionListener, WinnerListener {
 
         SwingUtilities.invokeLater( () -> {
             try {
-                Thread.sleep(1600);
+                //Thread.sleep(600);
                 for (int v = 0; v < 2; v++) {
                     if (!worldGame.getIAStartingPlaying()[v]) {
                         worldGame.SwapIAPlaying();
@@ -139,7 +143,23 @@ public class GameController implements ActionListener, WinnerListener {
 
     @Override
     public void onGameWinner(InfoGame.Winner winner) {
+
         gameView.disableAll();
+        try {
+            Settings.Img imgPath;
+
+            imgPath = switch (winner) {
+                case CROSS -> Settings.Img.X;
+                case CIRCLE ->  Settings.Img.O;
+                case DRAW, NOWINNER -> Settings.Img.Draw;
+            };
+
+            System.out.println("Launch GameWinView");
+            GameWinView.launch(frame, gameView, imgPath);
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }

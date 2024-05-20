@@ -12,10 +12,18 @@ import java.awt.*;
 
 public class GameStartView {
 
+    private static JFrame frame;
+
     public GameStartView() {
     }
 
-    private static JPanel setupStartPanel(JFrame frame){
+    public static void launch(JFrame frame, JPanel oldPanel) {
+
+        if (oldPanel != null) {
+            frame.remove(oldPanel);
+            System.out.println("oldPanel removed!");
+        }
+
         JPanel startPanel = new JPanel();
 
         JButton bIAvsIA = new JButton("IA VS IA");
@@ -51,11 +59,14 @@ public class GameStartView {
         startPanel.add(bIAvsIA);
         startPanel.add(bPvsIA);
 
-        return startPanel;
+        frame.add(startPanel);
+        frame.setVisible(true);
+        startPanel.setFocusable(true);
+        startPanel.requestFocus();
     }
 
     public static void launch() {
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setTitle(Settings.APP_NAME);
         frame.setSize(Settings.WINDOWS_GAMESTART_WIDTH, Settings.WINDOWS_GAMESTART_HEIGHT);
 
@@ -63,7 +74,8 @@ public class GameStartView {
         rootPane.putClientProperty("apple.awt.fullWindowContent", false);
         rootPane.putClientProperty("apple.awt.transparentTitleBar", false);
 
-        frame.add(setupStartPanel(frame));
+        launch(frame, null);
+
         GameFrame.frameSettings(frame);
         frame.setVisible(true);
         frame.setResizable(false);
