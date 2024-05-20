@@ -1,3 +1,4 @@
 /.idea/
 
-/UI-UltimateTicTacToe/src/main/resources/EmbASP/encodings/*
+/UI-UltimateTicTacToe/src/main/resources/EmbASP/encodings/
+/UI-UltimateTicTacToe/src/main/java/it.unical.informatica.studenti/Model/ClassiEmbASP.ChatCM/
