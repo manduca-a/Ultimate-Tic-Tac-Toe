@@ -102,8 +102,9 @@ public class GameController implements ActionListener, WinnerListener {
                     jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.X.getColor(), 5));
                 }
                 for( Component b : jpanels.get(i).getComponents()){
-                    if(jpanels.get(i).getComponents().length != 1)
-                        b.setEnabled(true);
+                    JButton button = (JButton) b;
+                    if(jpanels.get(i).getComponents().length != 1 && button.getIcon() == null)
+                        button.setEnabled(true);
                 }
             } else {
                 jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
