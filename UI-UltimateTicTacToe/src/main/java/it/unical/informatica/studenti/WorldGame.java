@@ -72,13 +72,14 @@ public class WorldGame {
     public void avviaIAvsIA(){
         CurrentGameMode = Settings.GameMode.IAVsIA;
         if(chiInizia()){
-            //TO DO : fare IA vs IA
+            System.out.println("Sta iniziando: "+Settings.TeamsPlaying[0]);
             IAStartingPlaying[0] = true;
             IAStartingPlaying[1] = false;
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[0]);
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
         }
         else{
+            System.out.println("Sta iniziando: "+Settings.TeamsPlaying[1]);
             IAStartingPlaying[0] = false;
             IAStartingPlaying[1] = true;
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[1]);

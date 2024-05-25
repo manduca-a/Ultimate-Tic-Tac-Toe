@@ -6,7 +6,6 @@ import it.unical.informatica.studenti.Teams;
 import it.unical.informatica.studenti.WorldGame;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
-import it.unical.mat.embasp.base.OptionDescriptor;
 import it.unical.mat.embasp.base.Output;
 import it.unical.mat.embasp.languages.asp.ASPInputProgram;
 import it.unical.mat.embasp.languages.asp.ASPMapper;
@@ -30,8 +29,6 @@ public class EmbaspManager {
             };
 
             Handler handler = new DesktopHandler(service);
-            OptionDescriptor option = new OptionDescriptor("-n 1");
-            handler.addOption(option);
             InputProgram program = new ASPInputProgram();
             program.addFilesPath("src/main/resources/EmbASP/encodings/" + team);
             //Attenzione i file dentro encodings devono assumere il medesimo valore dell'enum per essere presi
@@ -110,17 +107,25 @@ public class EmbaspManager {
     //Metodo ChatCM ancora da testare
     private static ArrayList<Integer> ASPChatCM(Handler handler, InputProgram program) throws Exception {
 
-        for ( SmallBoard b: WorldGame.getInstance().getBigBoard().getSmallBoards()){
-            for (int i = 0; i<3; i++){
-                for(int j= 0; j<3; j++){
-                    if(b.getSubBoard()[i][j] == 0)
-                        program.addObjectInput(new EmptyCell(i,j,b.getId()));
-                    else
-                        program.addObjectInput(new FullCell(i,j,b.getId(),b.getSubBoard()[i][j]));
+        for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()) {
+            if(b.GetWinner() == InfoGame.Winner.NOWINNER) {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (b.getSubBoard()[i][j] == 0)
+                            program.addObjectInput(new EmptyCell(i, j, b.getId()));
+                        else
+                            program.addObjectInput(new FullCell(i, j, b.getId(), b.getSubBoard()[i][j]));
+                    }
                 }
             }
+            else if(b.GetWinner() == InfoGame.Winner.CROSS)
+                program.addObjectInput(new SubTris(b.getId(),1));
+            else if(b.GetWinner() == InfoGame.Winner.CIRCLE)
+                program.addObjectInput(new SubTris(b.getId(),-1));
         }
+
         program.addObjectInput(new Marker(WorldGame.getInstance().getUserToPlay()));
+        program.addObjectInput(new EnemyMarker(WorldGame.getInstance().getUserToPlay()*-1));
         program.addObjectInput(new GridToPlay(WorldGame.getInstance().getBigBoard().getNextBoard()));
         //eventuali altri predicati da aggiungere da input
 
@@ -129,18 +134,18 @@ public class EmbaspManager {
         ASPMapper.getInstance().registerClass(InsertMarker.class);
 
         AnswerSets answersets = (AnswerSets) output;
+        System.out.println(output.getOutput());
 
         InsertMarker marker;
 
-        for(AnswerSet a: answersets.getAnswersets()){ //getOptimalAnswerSet da usare
+        for (AnswerSet a : answersets.getOptimalAnswerSets()) { //getOptimalAnswerSet da usare
             try {
-                for(Object obj:a.getAtoms()){
-                    if(!(obj instanceof InsertMarker)) continue;
+                for (Object obj : a.getAtoms()) {
+                    if (!(obj instanceof InsertMarker)) continue;
                     marker = (InsertMarker) obj;
                     return marker.getInsertData();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

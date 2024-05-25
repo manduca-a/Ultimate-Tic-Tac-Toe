@@ -10,7 +10,6 @@ import static it.unical.informatica.studenti.Model.InfoGame.Winner.*;
 public class BigBoard {
 
     private final ArrayList<SmallBoard> smallBoards =new ArrayList<>();
-
     private InfoGame.Winner BigBoardWinner = InfoGame.Winner.NOWINNER;
 
     private final int[][] gameBoard = new int[3][3];

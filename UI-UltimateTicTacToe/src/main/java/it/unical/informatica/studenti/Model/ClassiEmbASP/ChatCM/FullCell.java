@@ -21,7 +21,6 @@ public class FullCell {
         id= _id;
         marker = mark;
     }
-
     public FullCell(){}
 
     public int getI() {
@@ -54,5 +53,10 @@ public class FullCell {
 
     public void setMarker(int marker) {
         this.marker = marker;
+    }
+
+    @Override
+    public String toString() {
+        return "FullCell("+i+","+j+","+id+","+marker+").";
     }
 }

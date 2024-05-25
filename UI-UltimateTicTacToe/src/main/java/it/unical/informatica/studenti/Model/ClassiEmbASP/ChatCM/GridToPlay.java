@@ -22,4 +22,9 @@ public class GridToPlay {
     public int getIdGrid() {
         return idGrid;
     }
+
+    @Override
+    public String toString() {
+        return "GridToPlay("+idGrid+").";
+    }
 }

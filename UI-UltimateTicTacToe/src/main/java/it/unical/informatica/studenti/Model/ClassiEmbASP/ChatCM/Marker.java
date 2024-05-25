@@ -8,7 +8,6 @@ public class Marker {
 
     @Param(0)
     private int marker;
-
     public int getMarker() {
         return marker;
     }
@@ -23,4 +22,8 @@ public class Marker {
 
     public Marker(){}
 
+    @Override
+    public String toString() {
+        return "Marker("+marker+").";
+    }
 }

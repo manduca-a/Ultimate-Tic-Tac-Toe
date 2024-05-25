@@ -17,7 +17,6 @@ public class GameStartController implements ActionListener {
         this.frame = frame;
         this.panel = panel;
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
