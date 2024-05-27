@@ -66,7 +66,7 @@ public class WorldGame {
     }
 
     private WorldGame(){
-        bigBoard =new BigBoard();
+        bigBoard = new BigBoard();
     }
 
     public void avviaIAvsIA(){
@@ -76,6 +76,7 @@ public class WorldGame {
             IAStartingPlaying[0] = true;
             IAStartingPlaying[1] = false;
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[0]);
+            assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
         }
         else{
@@ -83,6 +84,7 @@ public class WorldGame {
             IAStartingPlaying[0] = false;
             IAStartingPlaying[1] = true;
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[1]);
+            assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
         }
     }
@@ -90,10 +92,14 @@ public class WorldGame {
     public void avviaPlayervsIA(){
         CurrentGameMode = Settings.GameMode.PlayerVsIA;
         if(chiInizia()) {
+            System.out.println("\n\tIA");
             IACalling= true;
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer); //da cambiare in base a quale team deve giocare come IA
+            assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
         }
+        else
+            System.out.println("\n\n\tPlayer!");
     }
 
     private boolean chiInizia(){

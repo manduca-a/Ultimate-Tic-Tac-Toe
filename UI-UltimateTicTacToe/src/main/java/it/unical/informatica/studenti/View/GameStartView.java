@@ -24,12 +24,16 @@ public class GameStartView {
             System.out.println("oldPanel removed!");
         }
 
+        frame.setLayout(new BorderLayout());
+
         JPanel startPanel = new JPanel();
+        JPanel startPanel2 = new JPanel();
 
         JButton bIAvsIA = new JButton("IA VS IA");
         JButton bPvsIA = new JButton("Player VS IA");
 
-        //JLabel TeamsPlaying = new JLabel(Settings.TeamsPlaying[0] +" VS "+Settings.TeamsPlaying[1]);
+        JLabel TeamsPlaying = new JLabel(Settings.TeamsPlaying[0] +" VS "+Settings.TeamsPlaying[1]);
+        JLabel TeamPlaying = new JLabel(String.valueOf(Settings.IAPlayingVsPLayer));
 
         GameStartController gameStartController = new GameStartController(frame, startPanel);
 
@@ -53,13 +57,30 @@ public class GameStartView {
         //int x = (screenDimension.width - bIAvsIA.getWidth()) / 2;
         //int y = (screenDimension.height - bIAvsIA.getHeight()) / 2;
 
-        startPanel.setLayout(new FlowLayout(FlowLayout.CENTER,screenDimension.width / 2,10));
+        startPanel.setLayout(new GridBagLayout());
 
-        //startPanel.add(TeamsPlaying);
-        startPanel.add(bIAvsIA);
-        startPanel.add(bPvsIA);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Margini tra i componenti
 
-        frame.add(startPanel);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        startPanel.add(bIAvsIA, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        startPanel.add(bPvsIA, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        startPanel.add(TeamsPlaying, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        startPanel.add(TeamPlaying, gbc);
+
+//        TeamsPlaying.setBounds(15, 30, 45, 50);
+
+        frame.add(startPanel, BorderLayout.CENTER);
         frame.setVisible(true);
         startPanel.setFocusable(true);
         startPanel.requestFocus();
