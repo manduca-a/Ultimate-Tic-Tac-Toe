@@ -1,11 +1,8 @@
 package it.unical.informatica.studenti.View;
 
-import it.unical.informatica.studenti.Controller.GameWinController;
 import it.unical.informatica.studenti.Settings;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -17,7 +14,6 @@ public class GameWinView extends JPanel {
 
     final private Image winnerImage;
     private static JFrame frame;
-    private static GameWinView gameWinView;
 
 
     public GameWinView(JFrame frame, Settings.Img winner) throws IOException {
@@ -26,6 +22,14 @@ public class GameWinView extends JPanel {
 
         // Create the buttons
         JButton quitButton = new JButton("Quit");
+
+        Font font;
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(GameStartView.class.getResourceAsStream("/fonts/Strian-regular.ttf")));
+        } catch (FontFormatException e) {
+            throw new RuntimeException(e);
+        }
+        quitButton.setFont(font.deriveFont(Font.BOLD, 13));
 
         // Add action listeners to the buttons
 
@@ -49,7 +53,15 @@ public class GameWinView extends JPanel {
 
         // Draw the "Win" text
         String winText = "Win";
-        Font winFont = new Font("Arial", Font.BOLD, 50);
+
+        Font font;
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(GameWinView.class.getResourceAsStream("/fonts/Strian-regular.ttf")));
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Font winFont = font.deriveFont(Font.BOLD, 50);
         g.setFont(winFont);
         FontMetrics metrics = g.getFontMetrics(winFont);
         int xText = (getWidth() - metrics.stringWidth(winText)) / 2;
@@ -75,9 +87,6 @@ public class GameWinView extends JPanel {
         GameFrame.frameSettings(frame);
 
         GameWinView view = new GameWinView(frame, imgPath);
-        gameWinView = view;
-
-        GameWinController controller = new GameWinController(frame, gameWinView);
 
         frame.add(view);
         frame.setVisible(true);

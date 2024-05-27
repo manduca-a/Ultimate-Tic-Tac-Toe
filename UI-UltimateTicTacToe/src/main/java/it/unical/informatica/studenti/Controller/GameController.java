@@ -2,9 +2,9 @@ package it.unical.informatica.studenti.Controller;
 
 
 import it.unical.informatica.studenti.Model.EmbaspManager;
-import it.unical.informatica.studenti.Model.SmallBoard;
 import it.unical.informatica.studenti.Settings;
 import it.unical.informatica.studenti.Model.InfoGame;
+import it.unical.informatica.studenti.View.GameStartView;
 import it.unical.informatica.studenti.View.GameView;
 import it.unical.informatica.studenti.View.GameWinView;
 import it.unical.informatica.studenti.WorldGame;
@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameController implements ActionListener, WinnerListener {
+public class GameController extends KeyAdapter implements ActionListener, WinnerListener {
 
-    private JFrame frame;
+    private final JFrame frame;
     private final GameView gameView;
     private final WorldGame worldGame = WorldGame.getInstance();
 
@@ -48,18 +48,18 @@ public class GameController implements ActionListener, WinnerListener {
 
         DoMove(o,id,i,j);       //va a colorare il bordo della prossima board di gioco con il calcolo (3*indiceriga)+indicecolonna di dove è stato inserito l'ultimo mark
 
-        WorldGame.getInstance().getBigBoard().PrintSmallBoards();
-
-        for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()){
-            if (b.getId()==WorldGame.getInstance().getBigBoard().getNextBoard()){
-                for (int f=0; i<3; i++){
-                    for (int k=0; k<3; k++){
-                        System.out.print(b.getSubBoard()[f][k]);
-                    }
-                    System.out.println();
-                }
-            }
-        }
+//        WorldGame.getInstance().getBigBoard().PrintSmallBoards();
+//
+//        for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()){
+//            if (b.getId()==WorldGame.getInstance().getBigBoard().getNextBoard()){
+//                for (int f=0; i<3; i++){
+//                    for (int k=0; k<3; k++){
+//                        System.out.print(b.getSubBoard()[f][k]);
+//                    }
+//                    System.out.println();
+//                }
+//            }
+//        }
 
         if(!worldGame.isIACalling()) {
             SwingUtilities.invokeLater( () -> {
@@ -176,6 +176,24 @@ public class GameController implements ActionListener, WinnerListener {
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            try {
+                GameStartView.launch(frame, gameView);
+            } catch (IOException | FontFormatException ex) {
+                throw new RuntimeException(ex);
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_R) {
+            try {
+                GameView.launch(frame, gameView);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 

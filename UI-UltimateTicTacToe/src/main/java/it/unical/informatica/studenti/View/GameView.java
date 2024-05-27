@@ -15,7 +15,6 @@ import java.util.Objects;
 
 public class GameView extends JPanel {
 
-    private JFrame frame;
     private static GameView gameView;
 
     private final ImageIcon iconX, iconO, iconDraw;
@@ -26,7 +25,6 @@ public class GameView extends JPanel {
 
     public GameView(JFrame frame) throws IOException {
         setBackground(Color.DARK_GRAY);
-        this.frame = frame;
 
         Image imgX = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.X.getPath())));
         Image imgXScaled = imgX.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
@@ -55,6 +53,8 @@ public class GameView extends JPanel {
         gameView = view;
 
         GameController controller = new GameController(frame, view);
+
+        view.addKeyListener(controller);
 
         frame.add(view);
 
@@ -144,10 +144,6 @@ public class GameView extends JPanel {
 
     public static LinkedList<JPanel> getjPanels() {
         return jPanels;
-    }
-
-    public JFrame getFrame() {
-        return frame;
     }
 
     public static JButton getButton(int i, int j, int id){
