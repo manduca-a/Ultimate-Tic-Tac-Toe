@@ -46,6 +46,10 @@ public class GameView extends JPanel {
         frame.remove(oldView);
         frame.setSize(Settings.WINDOWS_GAMEVIEW_SIZE, Settings.WINDOWS_GAMEVIEW_SIZE);
 
+        switch (WorldGame.getInstance().getCurrentGameMode()){
+            case IAVsIA -> frame.setTitle(Settings.APP_NAME + " | " + Settings.TeamsPlaying[0] + " VS " + Settings.TeamsPlaying[1]);
+            case PlayerVsIA -> frame.setTitle(Settings.APP_NAME + " | " + Settings.IAPlayingVsPLayer);
+        }
 
         GameView view = new GameView(frame);
         gameView = view;
@@ -103,9 +107,9 @@ public class GameView extends JPanel {
 
                 for (int j = 0; j < 9; j++) {
                     JButton button = new JButton();
-                    button.setName(String.valueOf(i) + " " + String.valueOf(j));
+                    button.setName(i + " " + j);
                     button.addActionListener(controller);
-                    ImageIcon icon;
+//                    ImageIcon icon;
 
                     button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
                     button.setBackground(Settings.State.BUTTON_BACKGROUND.getColor());

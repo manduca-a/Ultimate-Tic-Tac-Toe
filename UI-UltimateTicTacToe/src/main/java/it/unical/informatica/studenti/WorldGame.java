@@ -69,8 +69,13 @@ public class WorldGame {
         bigBoard = new BigBoard();
     }
 
-    public void avviaIAvsIA(){
+    public void IAvsIA(){
         CurrentGameMode = Settings.GameMode.IAVsIA;
+    }
+    public void PlayervsIA(){
+        CurrentGameMode = Settings.GameMode.PlayerVsIA;
+    }
+    public void avviaIAvsIA(){
         if(chiInizia()){
             System.out.println("Sta iniziando: "+Settings.TeamsPlaying[0]);
             IAStartingPlaying[0] = true;
@@ -90,7 +95,6 @@ public class WorldGame {
     }
 
     public void avviaPlayervsIA(){
-        CurrentGameMode = Settings.GameMode.PlayerVsIA;
         if(chiInizia()) {
             System.out.println("\n\tIA");
             IACalling= true;

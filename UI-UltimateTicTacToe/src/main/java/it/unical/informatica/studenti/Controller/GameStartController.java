@@ -20,14 +20,18 @@ public class GameStartController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            GameView.launch(frame, panel);
-
             JButton o = (JButton)e.getSource();
             if(o.getText().equals("IA VS IA")){
+                WorldGame.getInstance().IAvsIA();
+                GameView.launch(frame, panel);
                 WorldGame.getInstance().avviaIAvsIA();
             }else if (o.getText().equals("Player VS IA")){
+                WorldGame.getInstance().PlayervsIA();
+                GameView.launch(frame, panel);
                 WorldGame.getInstance().avviaPlayervsIA();
             }
+
+
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
