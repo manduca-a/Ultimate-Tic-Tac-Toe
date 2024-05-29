@@ -122,11 +122,26 @@ public class EmbaspManager {
                 program.addObjectInput(new SubTris(b.getId(),1));
             else if(b.GetWinner() == InfoGame.Winner.CIRCLE)
                 program.addObjectInput(new SubTris(b.getId(),-1));
+            else
+                program.addObjectInput(new Draw(b.getId()));
+        }
+
+        int turnCounter = 0;
+        for(SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()){
+            for(int i = 0; i < 3; i++){
+                for(int j = 0; j < 3; j++){
+                    if(b.getSubBoard()[i][j] != 0)
+                        turnCounter++;
+                }
+            }
         }
 
         program.addObjectInput(new Marker(WorldGame.getInstance().getUserToPlay()));
         program.addObjectInput(new EnemyMarker(WorldGame.getInstance().getUserToPlay()*-1));
         program.addObjectInput(new GridToPlay(WorldGame.getInstance().getBigBoard().getNextBoard()));
+        program.addObjectInput(new Move(turnCounter));
+
+        System.out.println(program.getPrograms());
         //eventuali altri predicati da aggiungere da input
 
         handler.addProgram(program);
@@ -138,7 +153,7 @@ public class EmbaspManager {
 
         InsertMarker marker;
 
-        for (AnswerSet a : answersets.getOptimalAnswerSets()) { //getOptimalAnswerSet da usare
+        for (AnswerSet a : answersets.getOptimalAnswerSets()) {
             try {
                 for (Object obj : a.getAtoms()) {
                     if (!(obj instanceof InsertMarker)) continue;
