@@ -15,7 +15,6 @@ import java.util.Objects;
 
 public class GameView extends JPanel {
 
-    private JFrame frame;
     private static GameView gameView;
 
     private final ImageIcon iconX, iconO, iconDraw;
@@ -26,7 +25,6 @@ public class GameView extends JPanel {
 
     public GameView(JFrame frame) throws IOException {
         setBackground(Color.DARK_GRAY);
-        this.frame = frame;
 
         Image imgX = ImageIO.read(Objects.requireNonNull(GameView.class.getResource(Settings.Img.X.getPath())));
         Image imgXScaled = imgX.getScaledInstance((((frame.getWidth()) / 3) / 3 - 10), (((frame.getWidth()) / 3) / 3 - 10), java.awt.Image.SCALE_SMOOTH);
@@ -46,11 +44,17 @@ public class GameView extends JPanel {
         frame.remove(oldView);
         frame.setSize(Settings.WINDOWS_GAMEVIEW_SIZE, Settings.WINDOWS_GAMEVIEW_SIZE);
 
+        switch (WorldGame.getInstance().getCurrentGameMode()){
+            case IAVsIA -> frame.setTitle(Settings.APP_NAME + " | " + Settings.TeamsPlaying[0] + " VS " + Settings.TeamsPlaying[1]);
+            case PlayerVsIA -> frame.setTitle(Settings.APP_NAME + " | " + Settings.IAPlayingVsPLayer);
+        }
 
         GameView view = new GameView(frame);
         gameView = view;
 
         GameController controller = new GameController(frame, view);
+
+        view.addKeyListener(controller);
 
         frame.add(view);
 
@@ -103,9 +107,9 @@ public class GameView extends JPanel {
 
                 for (int j = 0; j < 9; j++) {
                     JButton button = new JButton();
-                    button.setName(String.valueOf(i) + " " + String.valueOf(j));
+                    button.setName(i + " " + j);
                     button.addActionListener(controller);
-                    ImageIcon icon;
+//                    ImageIcon icon;
 
                     button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
                     button.setBackground(Settings.State.BUTTON_BACKGROUND.getColor());
@@ -140,10 +144,6 @@ public class GameView extends JPanel {
 
     public static LinkedList<JPanel> getjPanels() {
         return jPanels;
-    }
-
-    public JFrame getFrame() {
-        return frame;
     }
 
     public static JButton getButton(int i, int j, int id){

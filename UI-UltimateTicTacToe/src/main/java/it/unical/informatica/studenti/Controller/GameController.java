@@ -4,6 +4,7 @@ package it.unical.informatica.studenti.Controller;
 import it.unical.informatica.studenti.Model.EmbaspManager;
 import it.unical.informatica.studenti.Settings;
 import it.unical.informatica.studenti.Model.InfoGame;
+import it.unical.informatica.studenti.View.GameStartView;
 import it.unical.informatica.studenti.View.GameView;
 import it.unical.informatica.studenti.View.GameWinView;
 import it.unical.informatica.studenti.WorldGame;
@@ -15,9 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameController implements ActionListener, WinnerListener {
+public class GameController extends KeyAdapter implements ActionListener, WinnerListener {
 
-    private JFrame frame;
+    private final JFrame frame;
     private final GameView gameView;
     private final WorldGame worldGame = WorldGame.getInstance();
 
@@ -45,7 +46,20 @@ public class GameController implements ActionListener, WinnerListener {
 
     private void MovePlayerVsIA(JButton o,int id, int i , int j){
 
-        DoMove(o,id,i,j);
+        DoMove(o,id,i,j);       //va a colorare il bordo della prossima board di gioco con il calcolo (3*indiceriga)+indicecolonna di dove è stato inserito l'ultimo mark
+
+//        WorldGame.getInstance().getBigBoard().PrintSmallBoards();
+//
+//        for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()){
+//            if (b.getId()==WorldGame.getInstance().getBigBoard().getNextBoard()){
+//                for (int f=0; i<3; i++){
+//                    for (int k=0; k<3; k++){
+//                        System.out.print(b.getSubBoard()[f][k]);
+//                    }
+//                    System.out.println();
+//                }
+//            }
+//        }
 
         if(!worldGame.isIACalling()) {
             SwingUtilities.invokeLater( () -> {
@@ -53,6 +67,7 @@ public class GameController implements ActionListener, WinnerListener {
                     Thread.sleep(1200);
                     worldGame.setIACalling(true);
                     ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer);
+                    assert coords != null;
                     GameView.getButton(coords.get(0), coords.get(1), coords.get(2)).doClick();
                 }
                 catch (Exception ignored) {}
@@ -73,6 +88,7 @@ public class GameController implements ActionListener, WinnerListener {
                     if (!worldGame.getIAStartingPlaying()[v]) {
                         worldGame.SwapIAPlaying();
                         ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[v]);
+                        assert coords != null;
                         GameView.getButton(coords.get(0), coords.get(1), coords.get(2)).doClick();
                         return;
                     }
@@ -84,7 +100,7 @@ public class GameController implements ActionListener, WinnerListener {
 
     private void DoMove(JButton o,int indBigBoard, int rowSmallBoard, int colSmallBoard){
 
-        if (worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, worldGame.getUserToPlay())) {
+        if (worldGame.getBigBoard().UpdateBoardStatus(rowSmallBoard, colSmallBoard, indBigBoard, worldGame.getUserToPlay()))    /*  aggiorna il Model  */     {
             if (worldGame.getUserToPlay() == 1) gameView.setIconX(o); else if (worldGame.getUserToPlay() == -1) gameView.setIconO(o);
             worldGame.AlternateUserToPlay();
         }
@@ -94,7 +110,7 @@ public class GameController implements ActionListener, WinnerListener {
 
             // Sets the border green if it is the next board or if any board can be played when the game has no winner
             if ((worldGame.getBigBoard().getBigBoardWinner() == InfoGame.Winner.NOWINNER
-                    && (worldGame.getBigBoard().getNextBoard() == i || worldGame.getBigBoard().getNextBoard() == -1))) {
+                    && (worldGame.getBigBoard().getNextBoard() == i || worldGame.getBigBoard().getNextBoard() == -1)))  /*  aggiorna la View  */   {
                 if (worldGame.getUserToPlay() == 1) {
                     // X = 1, O = -1
                     jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.O.getColor(), 5));
@@ -106,7 +122,7 @@ public class GameController implements ActionListener, WinnerListener {
                     if(jpanels.get(i).getComponents().length != 1 && button.getIcon() == null)
                         button.setEnabled(true);
                 }
-            } else {
+            } else   /*   se c'è una board con un vincitore disattiva i bottoni   */    {
                 jpanels.get(i).setBorder(BorderFactory.createLineBorder(Settings.State.BIG_LINES_COLOR.getColor(), 5));
                 for( Component b : jpanels.get(i).getComponents()){
                     b.setEnabled(false);
@@ -160,6 +176,24 @@ public class GameController implements ActionListener, WinnerListener {
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            try {
+                GameStartView.launch(frame, gameView);
+            } catch (IOException | FontFormatException ex) {
+                throw new RuntimeException(ex);
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_R) {
+            try {
+                GameView.launch(frame, gameView);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 

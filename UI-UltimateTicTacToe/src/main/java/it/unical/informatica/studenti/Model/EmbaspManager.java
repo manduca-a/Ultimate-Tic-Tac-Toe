@@ -1,6 +1,8 @@
 package it.unical.informatica.studenti.Model;
 
 import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.*;
+import it.unical.informatica.studenti.Model.ClassiEmbASP.QueryQueens.occupiedCell;
+import it.unical.informatica.studenti.Model.ClassiEmbASP.QueryQueens.symbol;
 import it.unical.informatica.studenti.OsCheck;
 import it.unical.informatica.studenti.Teams;
 import it.unical.informatica.studenti.WorldGame;
@@ -16,6 +18,7 @@ import it.unical.mat.embasp.platforms.desktop.DesktopService;
 import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EmbaspManager {
 
@@ -39,10 +42,10 @@ public class EmbaspManager {
                     return ASPChatCM(handler, program);
                 }
                 case GM -> {
-                    return AddProgramTeamName(handler, program);
+                    //return AddProgramTeamName(handler, program);
                 }
                 case QueryQueens -> {
-                    return AddProgramTeamName(handler, program);
+                    return ASPQueryQueens(handler, program);
                 }
                 //Ogni team implementa il proprio metodo EmbAsp
             }
@@ -53,55 +56,49 @@ public class EmbaspManager {
         }
     }
 
-    private static ArrayList<Integer> AddProgramTeamName(Handler handler, InputProgram program) throws Exception{
+    private static ArrayList<Integer> ASPQueryQueens(Handler handler, InputProgram program) throws Exception{
 
-        //esempio di come aggiungere gli Input
-        /*for (int i =0;i<3;i++)
-            for (int j =5;j<7;j++)
-                program.addObjectInput(new Arco(i, j));
-        program.addObjectInput(new Arco(8, 9));
-        program.addObjectInput(new Arco(9, 10));
-        program.addObjectInput(new Arco(10, 8));*/
-        //
+        //ASPMapper.getInstance().registerClass(occupiedCell.class);
+        ASPMapper.getInstance().registerClass(symbol.class);
 
-        for ( SmallBoard b: WorldGame.getInstance().getBigBoard().getSmallBoards()){
-            for (int i = 0; i<3; i++){
-                for(int j= 0; j<3; j++){
-                    //aggiungi classe per elemento della board
+//        devo cercare la board di gioco e passare tutti i dati ad ASP
+        for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()) {
+//            System.out.println(Arrays.deepToString(b.getSubBoard()));
+//            System.out.println("ecco");
+            if (b.getId() == WorldGame.getInstance().getBigBoard().getNextBoard()){
+                int[][] subBoard = b.getSubBoard();
+//                System.out.println(Arrays.deepToString(subBoard));
+                for (int i = 0; i < subBoard.length; i++){
+                    for (int j= 0; j < subBoard[i].length; i++){
+                        if (subBoard[i][j] == 1 || subBoard[i][j] == -1) {
+//                            System.out.println("id = " + b.getId() + " i= " + i + " j= " + j + " mark= " + subBoard[i][j]);
+                            //program.addProgram("occupiedCell(" + subBoard[i][j] + ", " + i + ", " + j + ").");
+//                            System.out.println("ciao");
+                        }
+                    }
                 }
             }
         }
 
-        //eventuali altri predicati da aggiungere da input
-
         handler.addProgram(program);
-        System.out.println(program.getPrograms());
+
         Output output = handler.startSync();
-        //ASPMapper.getInstance().registerClass(InCricca.class); //Esempio registrare classe per EmbAsp
 
         AnswerSets answersets = (AnswerSets) output;
 
-        ArrayList<Integer> indici = new ArrayList<>();
-
-        for(AnswerSet a: answersets.getOptimalAnswerSets()){
-            ArrayList<String> elements = new ArrayList<String>();
-            System.out.println(a.toString());
+        for(AnswerSet a: answersets.getAnswersets()){ //getOptimalAnswerSet da usare
             try {
-                for(Object obj:a.getAtoms()){
-                    //Scartiamo tutto ci� che non � un oggetto della classe Cell
-                    //if(!(obj instanceof InCricca)) continue;
-                    //Convertiamo in un oggetto della classe Cell e impostiamo il valore di ogni cella
-                    //nella matrice rappresentante la griglia del Sudoku
-                    //InCricca c= (InCricca) obj;
-                    //elements.add(c.toString());
-                    //System.out.println("cricca dim "+ elements.size() );
+                for(Object obj : a.getAtoms()){
+                    if(obj instanceof symbol){
+                        System.out.println(obj);
+                    }
                 }
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return indici;
+        return null;
     }
 
     //Metodo ChatCM ancora da testare

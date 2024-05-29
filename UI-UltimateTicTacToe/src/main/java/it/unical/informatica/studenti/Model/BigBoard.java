@@ -60,17 +60,17 @@ public class BigBoard {
             throw new RuntimeException("Invalid board");
     }
 
-    private void PrintGameBoard() {
-        for(int i =0; i<3; i++){
-            for(int j=0; j<3; j++){
-                System.out.print(gameBoard[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
+//    public void PrintGameBoard() {
+//        for(int i =0; i<3; i++){
+//            for(int j=0; j<3; j++){
+//                System.out.print(gameBoard[i][j]);
+//            }
+//            System.out.println();
+//        }
+//        System.out.println();
+//    }
 
-    public void PrintSmallBoard() {
+    public void PrintSmallBoards() {
         for( int k=0; k<9; k++){
             System.out.println("Matrix di:"+k);
             for(int i =0; i<3; i++){
@@ -83,11 +83,11 @@ public class BigBoard {
         }
     }
 
-    public boolean UpdateBoardStatus(int i, int j, int boardIndex, int value) {
+    public boolean UpdateBoardStatus(int i, int j, int boardIndex, int value) /*   update the matrix and set the next board to play on    */{
         if((nextBoard == -1 || nextBoard == boardIndex) && smallBoards.get(boardIndex).getSubBoard()[i][j] == 0 ){
             smallBoards.get(boardIndex).SetCell(i, j, value);
             if(smallBoards.get(3*i+j).GetWinner() == InfoGame.Winner.NOWINNER)
-                nextBoard = 3*i+j;
+                nextBoard = 3*i+j;                                                               ///////////////////////
             else
                 nextBoard = -1;
             return true;
