@@ -157,7 +157,7 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
         button.setDisabledIcon(icon);
 
         panel.add(button);
-        GameView.setJPanel(panel, id);
+        gameView.setJPanel(panel, id);
     }
 
     @Override

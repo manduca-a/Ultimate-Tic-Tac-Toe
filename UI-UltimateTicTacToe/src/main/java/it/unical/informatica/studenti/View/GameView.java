@@ -54,7 +54,7 @@ public class GameView extends JPanel {
         initializeTeamLabels();
     }
 
-    private void initializeTeamLabels() {
+    public void initializeTeamLabels() {
         String space = "  ";
         teamXLabel = new JLabel(space + Settings.TeamsPlaying[0].toString(), iconX, JLabel.CENTER);
         teamOLabel = new JLabel(space + Settings.TeamsPlaying[1].toString(), iconO, JLabel.CENTER);
@@ -133,6 +133,7 @@ public class GameView extends JPanel {
         gamePanel = new JPanel(bigGrid);
         jPanels = new LinkedList<>();
 
+
         try {
             for (int i = 0; i < 9; i++) {
                 GridLayout miniGrid = new GridLayout(3, 3);
@@ -181,11 +182,11 @@ public class GameView extends JPanel {
         return (JButton) jPanels.get(id).getComponent(i * 3 + j);
     }
 
-    public static void setJPanel(JPanel jPanel, int index) {
+    public void setJPanel(JPanel jPanel, int index) {
         GameView.jPanels.set(index, jPanel);
-        gameView.removeAll();
+        gamePanel.removeAll();
         for (JPanel p : jPanels) {
-            gameView.add(p);
+            gamePanel.add(p);
         }
     }
 
