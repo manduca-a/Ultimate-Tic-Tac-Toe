@@ -50,14 +50,41 @@ public class GameView extends JPanel {
         iconX = new ImageIcon(imgXScaled);
         iconO = new ImageIcon(imgOScaled);
         iconDraw = new ImageIcon(imgDrawScaled);
-
-        initializeTeamLabels();
     }
 
     public void initializeTeamLabels() {
+
+        String player1 = "";
+        String player2 = "";
+
         String space = "  ";
-        teamXLabel = new JLabel(space + Settings.TeamsPlaying[0].toString(), iconX, JLabel.CENTER);
-        teamOLabel = new JLabel(space + Settings.TeamsPlaying[1].toString(), iconO, JLabel.CENTER);
+
+        switch (WorldGame.getInstance().getCurrentGameMode()) {
+            case IAVsIA -> {
+                if (WorldGame.getInstance().getIAStartingPlaying()[0]) {
+                    player1 = Settings.TeamsPlaying[0].toString();
+                    player2 = Settings.TeamsPlaying[1].toString();
+                } else {
+                    player1 = Settings.TeamsPlaying[1].toString();
+                    player2 = Settings.TeamsPlaying[0].toString();
+                }
+            }
+            case PlayerVsIA -> {
+                if (WorldGame.getInstance().isIACalling()) {
+                    System.out.println("isAICalling=True");
+                    player1 = Settings.IAPlayingVsPLayer.toString();
+                    player2 = "Player";
+                } else {
+                    System.out.println("isAICalling=False");
+                    player1 = "Player";
+                    player2 = Settings.IAPlayingVsPLayer.toString();
+                }
+            }
+        }
+
+
+        teamXLabel = new JLabel(space + player1, iconX, JLabel.CENTER);
+        teamOLabel = new JLabel(space + player2, iconO, JLabel.CENTER);
 
         teamXLabel.setOpaque(true);
         teamOLabel.setOpaque(true);
@@ -91,6 +118,7 @@ public class GameView extends JPanel {
                 frame.setSize(newSize, newSize+100);
             }
         });
+
         frame.setSize(Settings.WINDOWS_GAMEVIEW_SIZE, Settings.WINDOWS_GAMEVIEW_SIZE+100);
 
         switch (WorldGame.getInstance().getCurrentGameMode()){
@@ -100,14 +128,11 @@ public class GameView extends JPanel {
 
         GameView view = new GameView(frame);
         gameView = view;
+        view.initializeTeamLabels();
 
         GameController controller = new GameController(frame, view);
-
         view.addKeyListener(controller);
-
         frame.add(view);
-
-        GameFrame.frameSettings(frame);
 
         JRootPane rootPane = frame.getRootPane();
         rootPane.putClientProperty("apple.awt.fullWindowContent", true);
