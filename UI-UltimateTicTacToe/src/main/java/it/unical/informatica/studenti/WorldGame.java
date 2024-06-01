@@ -26,6 +26,7 @@ public class WorldGame {
     public static WorldGame getInstance(){
         if(instance == null){
             instance = new WorldGame();
+            instance.chiInizia();
         }
         return instance;
     }
@@ -78,16 +79,12 @@ public class WorldGame {
     public void avviaIAvsIA(){
         if(chiInizia()){
             System.out.println("Sta iniziando: "+Settings.TeamsPlaying[0]);
-            IAStartingPlaying[0] = true;
-            IAStartingPlaying[1] = false;
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[0]);
             assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
         }
         else{
             System.out.println("Sta iniziando: "+Settings.TeamsPlaying[1]);
-            IAStartingPlaying[0] = false;
-            IAStartingPlaying[1] = true;
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[1]);
             assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
@@ -97,7 +94,6 @@ public class WorldGame {
     public void avviaPlayervsIA(){
         if(chiInizia()) {
             System.out.println("\n\tIA");
-            IACalling= true;
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer); //da cambiare in base a quale team deve giocare come IA
             assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
@@ -106,10 +102,30 @@ public class WorldGame {
             System.out.println("\n\n\tPlayer!");
     }
 
-    private boolean chiInizia(){
-        Random random = new Random();
-        int starting = random.nextInt(0,2);
-        return starting == 0;
+
+
+    private int starting = -100;
+    private boolean chiInizia() {
+        if (this.starting == -100) {
+            Random random = new Random();
+            int starting = random.nextInt(0, 2);
+
+            if (starting == 0) {
+                //AIvsAI
+                IAStartingPlaying[0] = true;
+                IAStartingPlaying[1] = false;
+                //AIvsPlayer
+                IACalling= true;
+            } else {
+                //AIvsAI
+                IAStartingPlaying[0] = false;
+                IAStartingPlaying[1] = true;
+
+            }
+            this.starting = starting;
+            return starting == 0;
+        }
+        return this.starting == 0;
     }
 
     public void resetBoard(){
