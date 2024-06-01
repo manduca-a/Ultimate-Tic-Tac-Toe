@@ -20,8 +20,20 @@ public class GameView extends JPanel {
     private final ImageIcon iconX, iconO, iconDraw;
 
     private static LinkedList<JPanel> jPanels;
+    private JLabel teamXLabel;
 
-    //TODO: AGGIUNGERE DISPLAY PER CAPIRE CHI DEVE GIOCARE E ALERT PER QUANDO IL GIOCO FINISCE
+    public void setTeamsLabelColors(boolean isXPlaing) {
+        if (isXPlaing) {
+            teamXLabel.setBackground(Color.GREEN);
+            teamOLabel.setBackground(Color.LIGHT_GRAY);
+        } else {
+            teamXLabel.setBackground(Color.LIGHT_GRAY);
+            teamOLabel.setBackground(Color.GREEN);
+        }
+    }
+
+    private JLabel teamOLabel;
+    private JPanel topPanel, gamePanel;
 
     public GameView(JFrame frame) throws IOException {
         setBackground(Color.DARK_GRAY);
@@ -40,30 +52,58 @@ public class GameView extends JPanel {
         iconDraw = new ImageIcon(imgDrawScaled);
     }
 
-    public static void launch(JFrame frame, JPanel oldView) throws IOException {
-        frame.remove(oldView);
-        frame.setSize(Settings.WINDOWS_GAMEVIEW_SIZE, Settings.WINDOWS_GAMEVIEW_SIZE);
+    public void initializeTeamLabels() {
 
-        switch (WorldGame.getInstance().getCurrentGameMode()){
-            case IAVsIA -> frame.setTitle(Settings.APP_NAME + " | " + Settings.TeamsPlaying[0] + " VS " + Settings.TeamsPlaying[1]);
-            case PlayerVsIA -> frame.setTitle(Settings.APP_NAME + " | " + Settings.IAPlayingVsPLayer);
+        String player1 = "";
+        String player2 = "";
+
+        String space = "  ";
+
+        switch (WorldGame.getInstance().getCurrentGameMode()) {
+            case IAVsIA -> {
+                if (WorldGame.getInstance().getIAStartingPlaying()[0]) {
+                    player1 = Settings.TeamsPlaying[0].toString();
+                    player2 = Settings.TeamsPlaying[1].toString();
+                } else {
+                    player1 = Settings.TeamsPlaying[1].toString();
+                    player2 = Settings.TeamsPlaying[0].toString();
+                }
+            }
+            case PlayerVsIA -> {
+                if (WorldGame.getInstance().isIACalling()) {
+                    System.out.println("isAICalling=True");
+                    player1 = Settings.IAPlayingVsPLayer.toString();
+                    player2 = "Player";
+                } else {
+                    System.out.println("isAICalling=False");
+                    player1 = "Player";
+                    player2 = Settings.IAPlayingVsPLayer.toString();
+                }
+            }
         }
 
-        GameView view = new GameView(frame);
-        gameView = view;
 
-        GameController controller = new GameController(frame, view);
+        teamXLabel = new JLabel(space + player1, iconX, JLabel.CENTER);
+        teamOLabel = new JLabel(space + player2, iconO, JLabel.CENTER);
 
-        view.addKeyListener(controller);
+        teamXLabel.setOpaque(true);
+        teamOLabel.setOpaque(true);
 
-        frame.add(view);
+        teamXLabel.setFont(new Font("Arial", Font.BOLD, 25));
+        teamOLabel.setFont(new Font("Arial", Font.BOLD, 25));
 
-        GameFrame.frameSettings(frame);
+        setTeamsLabelColors(WorldGame.getInstance().getUserToPlay()==1);
 
-        JRootPane rootPane = frame.getRootPane();
-        rootPane.putClientProperty("apple.awt.fullWindowContent", true);
-        rootPane.putClientProperty("apple.awt.transparentTitleBar", true);
+        setLayout(new BorderLayout());
+        topPanel = new JPanel(new GridLayout(1, 2));
+        topPanel.setPreferredSize(new Dimension(getWidth(), 100));
+        topPanel.add(teamXLabel);
+        topPanel.add(teamOLabel);
+        add(topPanel, BorderLayout.NORTH);
+    }
 
+    public static void launch(JFrame frame, JPanel oldView) throws IOException {
+        frame.remove(oldView);
         frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -75,9 +115,28 @@ public class GameView extends JPanel {
                 int newSize = Math.min(newWidth, newHeight);
 
                 // Imposta le dimensioni del frame in modo che siano sempre uguali
-                frame.setSize(newSize, newSize);
+                frame.setSize(newSize, newSize+100);
             }
         });
+
+        frame.setSize(Settings.WINDOWS_GAMEVIEW_SIZE, Settings.WINDOWS_GAMEVIEW_SIZE+100);
+
+        switch (WorldGame.getInstance().getCurrentGameMode()){
+            case IAVsIA -> frame.setTitle(Settings.APP_NAME + " | " + Settings.TeamsPlaying[0] + " VS " + Settings.TeamsPlaying[1]);
+            case PlayerVsIA -> frame.setTitle(Settings.APP_NAME + " | " + Settings.IAPlayingVsPLayer);
+        }
+
+        GameView view = new GameView(frame);
+        gameView = view;
+        view.initializeTeamLabels();
+
+        GameController controller = new GameController(frame, view);
+        view.addKeyListener(controller);
+        frame.add(view);
+
+        JRootPane rootPane = frame.getRootPane();
+        rootPane.putClientProperty("apple.awt.fullWindowContent", true);
+        rootPane.putClientProperty("apple.awt.transparentTitleBar", true);
 
         frame.setLayout(new BorderLayout());
         frame.add(view, BorderLayout.CENTER);
@@ -87,16 +146,21 @@ public class GameView extends JPanel {
 
         GameFrame.frameSettings(frame);
 
+        view.initializeGamePanel(controller);
+
+        frame.setVisible(true);
+        view.setFocusable(true);
+        view.requestFocus();
+    }
+
+    private void initializeGamePanel(GameController controller) {
         GridLayout bigGrid = new GridLayout(3, 3);
-        gameView.setLayout(bigGrid);
-
-
+        gamePanel = new JPanel(bigGrid);
         jPanels = new LinkedList<>();
 
+
         try {
-
             for (int i = 0; i < 9; i++) {
-
                 GridLayout miniGrid = new GridLayout(3, 3);
                 JPanel p = new JPanel();
                 p.setName(String.valueOf(i));
@@ -104,29 +168,21 @@ public class GameView extends JPanel {
                 p.setBorder(BorderFactory.createLineBorder(Settings.State.CURRENT_PLAYING.getColor(), 5));
                 jPanels.add(p);
 
-
                 for (int j = 0; j < 9; j++) {
                     JButton button = new JButton();
                     button.setName(i + " " + j);
                     button.addActionListener(controller);
-//                    ImageIcon icon;
-
                     button.setBorder(BorderFactory.createLineBorder(Settings.State.LITTLE_LINES_COLOR.getColor(), 3)); // Set border color to red and thickness to 5
                     button.setBackground(Settings.State.BUTTON_BACKGROUND.getColor());
                     p.add(button);
                 }
-                gameView.add(p);
+                gamePanel.add(p);
             }
-
         } catch (Exception e) {
             System.out.println(e);
         }
 
-
-        frame.setVisible(true);
-        view.setFocusable(true);
-        view.requestFocus();
-
+        add(gamePanel, BorderLayout.CENTER);
     }
 
     public static GameView getGameview() {
@@ -137,6 +193,7 @@ public class GameView extends JPanel {
         o.setIcon(iconX);
         o.setDisabledIcon(iconX);
     }
+
     public void setIconO(JButton o) {
         o.setIcon(iconO);
         o.setDisabledIcon(iconO);
@@ -146,36 +203,45 @@ public class GameView extends JPanel {
         return jPanels;
     }
 
-    public static JButton getButton(int i, int j, int id){
-        return (JButton) jPanels.get(id).getComponent(i*3+j);
+    public static JButton getButton(int i, int j, int id) {
+        return (JButton) jPanels.get(id).getComponent(i * 3 + j);
     }
 
-    public static void setJPanel(JPanel jPanel, int index) {
+    public void setJPanel(JPanel jPanel, int index) {
         GameView.jPanels.set(index, jPanel);
-        gameView.removeAll();
-        for(JPanel p : jPanels) {
-            gameView.add(p);
+        gamePanel.removeAll();
+        for (JPanel p : jPanels) {
+            gamePanel.add(p);
         }
     }
 
-    public ImageIcon getIconX(){
+    public ImageIcon getIconX() {
         return iconX;
     }
 
-    public ImageIcon getIconO(){
+    public ImageIcon getIconO() {
         return iconO;
     }
 
-    public ImageIcon getIconDraw(){
+    public ImageIcon getIconDraw() {
         return iconDraw;
     }
 
     public void disableAll() {
-        for(JPanel p : jPanels){
-            for(Component c : p.getComponents()){
+        for (JPanel p : jPanels) {
+            for (Component c : p.getComponents()) {
                 c.setEnabled(false);
             }
         }
     }
-}
 
+    public void updateTurnDisplay(boolean isXTurn) {
+        if (isXTurn) {
+            teamXLabel.setBackground(Color.LIGHT_GRAY);
+            teamOLabel.setBackground(Color.DARK_GRAY);
+        } else {
+            teamXLabel.setBackground(Color.DARK_GRAY);
+            teamOLabel.setBackground(Color.LIGHT_GRAY);
+        }
+    }
+}

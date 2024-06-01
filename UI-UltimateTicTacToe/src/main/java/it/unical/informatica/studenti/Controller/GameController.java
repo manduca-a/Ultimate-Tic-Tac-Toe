@@ -42,6 +42,8 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
             case IAVsIA -> MoveIAvsIA(o,indBigBoard,rowSmallBoard,colSmallBoard);
             case PlayerVsIA -> MovePlayerVsIA(o,indBigBoard,rowSmallBoard,colSmallBoard);
         }
+
+        gameView.setTeamsLabelColors(WorldGame.getInstance().getUserToPlay()==1);
     }
 
     private void MovePlayerVsIA(JButton o,int id, int i , int j){
@@ -155,7 +157,7 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
         button.setDisabledIcon(icon);
 
         panel.add(button);
-        GameView.setJPanel(panel, id);
+        gameView.setJPanel(panel, id);
     }
 
     @Override

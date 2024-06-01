@@ -79,6 +79,8 @@ public class GameWinView extends JPanel {
             g.drawImage(scaledImage, xImage, yImage, this);
         }
 
+        GameFrame.frameSettings(frame);
+
     }
 
     public static void launch(JFrame frame, JPanel oldView, Settings.Img imgPath) throws IOException {

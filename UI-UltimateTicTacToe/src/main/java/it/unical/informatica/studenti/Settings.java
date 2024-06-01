@@ -16,9 +16,9 @@ public class Settings {
 
     public static final Dimension BUTTON_DIMENSION = new Dimension(200, 50);
 
-    public static Teams[] TeamsPlaying = {Teams.QueryQueens,Teams.QueryQueens};
+    public static Teams[] TeamsPlaying = {Teams.CHATCM,Teams.CHATCM};
 
-    public static Teams IAPlayingVsPLayer = Teams.QueryQueens;
+    public static Teams IAPlayingVsPLayer = Teams.CHATCM;
 
     public enum  GameMode {PlayerVsIA,IAVsIA}
 
