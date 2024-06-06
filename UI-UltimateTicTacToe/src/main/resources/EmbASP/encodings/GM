@@ -1,21 +1,78 @@
 cell(0..2, 0..2).
 indexBoard(0..8).
-
 board(B, X, Y) :- indexBoard(B), cell(X,Y).
+
+%% Fatti che passiamo dal programma
+
+% La B indica l'indice della board nella quale facciamo la mossa in X e Y
+% myMove(B,X,Y). --> mosse fatte dalla nostra IA fino ad ora
+% enemyMove(B,X,Y). --> mosse fatte dal nemico fino ad ora
+% moveEnemyCanWin(B,X,Y) --> indica la mossa che permette al nemico di vincere la small board B
+% moveICanWin(B,X,Y) --> indica la mossa che permette alla nosta IA di vincere la small board B
+% boardWinByMe(B). --> indica le board vinte dalla nostra IA
+% boardWinByEnemy(B). --> indica le board vinte dal nemico
+% boardCanWin(B) --> indica che la nostra IA può vincere sulla board indicata
+% currentBoard(B). --> indica la board sulla quale la nostra IA deve fare la mossa
+
+% Ci ricaviamo le possibili mosse che si possono fare nella currentBoard
+
 inPossibleMove(B,X,Y) | outPossibleMove(B,X,Y) :- not myMove(B,X,Y), not enemyMove(B,X,Y), board(B,X,Y), currentBoard(B).
 
+% Prendiamo solo le soluzione con una mossa
+
 :- #count { B,X,Y: inPossibleMove(B,X,Y)} != 1.
+
+% countEnemyWinningMoves --> serve per contare quante mosse vincenti ha il nemico nella currentBoard
+
 cewm(C) :- #count {B,X,Y:moveEnemyCanWin(B,X,Y), currentBoard(B)} = C.
+
+%countMyWinnigMoves --> serve per contare con quante mosse la nostra IA può vincere nella currentBoard
+
 cmwm(C) :- #count {B,X,Y:moveICanWin(B,X,Y), currentBoard(B)} = C.
+
+% countMyWinnigMovesInPossibleMove --> serve per contare con quante mosse la nostra IA può vincere sulla board dove stiamo mandando il nemico
+
 cmwmipm(C,B1) :- inPossibleMove(B,X,Y), B1 = 3*X+Y, #count {B1,X1,Y1:moveICanWin(B1,X1,Y1)} = C.
+
+% CountMyMoves --> conta le mosse fatte fino ad ora dalla nostra IA
+
 cmm(1) :- #count {B,X,Y:myMove(B,X,Y)} > 0.
+
+% Weak constraint
+
+% Constraint di difesa
+
+% Controllo che non lo mando in una board vinta (indifferente se vinta da lui o da noi), così da non fargli decidere la mossa
 
 :~ inPossibleMove(B,X,Y), boardWinByMe(B1),B1 != B, B1 = 3*X+Y. [1@13]
 :~ inPossibleMove(B,X,Y), boardWinByEnemy(B1),B1 != B, B1 = 3*X+Y. [1@13]
+
+% Controllo che non lo mandiamo dove può vincere
+
 :~ inPossibleMove(B,X,Y), moveEnemyCanWin(B1,_,_), B1 != B, B1 = 3*X+Y. [1@12]
+
+% Controllo che non lo mandiamo dove posso vincere
+
 :~ inPossibleMove(B,X,Y), boardCanWin(B1), cmwmipm(C,B1), C = 1. [1@11]
+
+% Controllo che non lo mandiamo al centro quando deve decidere in quale board mandarlo
+
 :~ inPossibleMove(B,X,Y), X=1, Y=1, cmwm(C1), C1 = 0, cewm(C), C = 0, cmm(1). [1@10]
+
+% Non posso scartare le mosse sulla board corrente dove lui può vincere
+
 :~ outPossibleMove(B,X,Y), moveEnemyCanWin(B,X,Y). [1@9]
+
+% Constraint di attacco
+
 :~ outPossibleMove(B,X,Y), moveICanWin(B,X,Y). [2@9]
+
+% Constraint di stallo
+
+% Prendere l'angolo della board corrente se non ci sono mosse con le quali il nemico vince
+
 :~ outPossibleMove(B,X,Y), X!=1, Y!=1, cmwm(C1), C1 = 0, cewm(C), C = 0. [1@7]
+
+% Prende il centro nel caso della prima mossa
+
 :~ outPossibleMove(B,X,Y), X=1, Y=1, cmwm(C1), C1 = 0, cewm(C), C = 0, not cmm(1). [1@6]
