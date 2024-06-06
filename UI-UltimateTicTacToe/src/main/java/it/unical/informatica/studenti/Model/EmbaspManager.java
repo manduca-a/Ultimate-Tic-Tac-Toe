@@ -1,8 +1,6 @@
 package it.unical.informatica.studenti.Model;
 
 import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.*;
-import it.unical.informatica.studenti.Model.ClassiEmbASP.QueryQueens.occupiedCell;
-import it.unical.informatica.studenti.Model.ClassiEmbASP.QueryQueens.symbol;
 import it.unical.informatica.studenti.OsCheck;
 import it.unical.informatica.studenti.Teams;
 import it.unical.informatica.studenti.WorldGame;
@@ -18,14 +16,13 @@ import it.unical.mat.embasp.platforms.desktop.DesktopService;
 import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class EmbaspManager {
 
     public static ArrayList<Integer> avviaASP(Teams team){
         try {
             DesktopService service = switch (OsCheck.getOperatingSystemType()) {
-                case Windows -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_win64.exe");
+                case Windows -> new DLV2DesktopService("UI-UltimateTicTacToe/src/main/resources/EmbASP/dlv2_win64.exe");
                 case MacOS -> new DLV2DesktopService("src/main/resources/EmbASP/dlv-2.1.2-arm64");
                 case Linux -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_linux64");
                 default -> throw new Exception("No DLV for this OS.");
@@ -33,7 +30,8 @@ public class EmbaspManager {
 
             Handler handler = new DesktopHandler(service);
             InputProgram program = new ASPInputProgram();
-            program.addFilesPath("src/main/resources/EmbASP/encodings/" + team);
+            String path = "UI-UltimateTicTacToe/src/main/resources/EmbASP/encodings/" + team;
+            program.addFilesPath(path);
             //Attenzione i file dentro encodings devono assumere il medesimo valore dell'enum per essere presi
             //(o almeno dovrebbe essere così, da testare)
 
@@ -56,25 +54,42 @@ public class EmbaspManager {
         }
     }
 
-    private static ArrayList<Integer> ASPQueryQueens(Handler handler, InputProgram program) throws Exception{
+    private static ArrayList<Integer> ASPQueryQueens(Handler handler, InputProgram program) {
+        handler.removeAll();
 
-        //ASPMapper.getInstance().registerClass(occupiedCell.class);
-        ASPMapper.getInstance().registerClass(symbol.class);
+        String nextBoard = transformCoordinates(WorldGame.getInstance().getBigBoard().getNextBoard());
 
-//        devo cercare la board di gioco e passare tutti i dati ad ASP
+        String fact = null;
+        if (nextBoard != null) /*   Se si gioca in una sola board creo il fatto playingSmallBoard   */ {
+            String[] splitted = nextBoard.split("_");
+            fact = "playingSmallBoard(" + splitted[0] + ", " + splitted[1] + ").";
+            program.addProgram(fact);
+        }
+//        else System.out.println("no playing small board");
+////        devo cercare la board di gioco e passare tutti i dati ad ASP
+        int i=0;
         for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()) {
-//            System.out.println(Arrays.deepToString(b.getSubBoard()));
-//            System.out.println("ecco");
-            if (b.getId() == WorldGame.getInstance().getBigBoard().getNextBoard()){
-                int[][] subBoard = b.getSubBoard();
-//                System.out.println(Arrays.deepToString(subBoard));
-                for (int i = 0; i < subBoard.length; i++){
-                    for (int j= 0; j < subBoard[i].length; i++){
-                        if (subBoard[i][j] == 1 || subBoard[i][j] == -1) {
-//                            System.out.println("id = " + b.getId() + " i= " + i + " j= " + j + " mark= " + subBoard[i][j]);
-                            //program.addProgram("occupiedCell(" + subBoard[i][j] + ", " + i + ", " + j + ").");
-//                            System.out.println("ciao");
-                        }
+            String tosplit = transformCoordinates(i);
+            i++;
+            String[] coords = tosplit.split("_");
+            if(b.GetWinner() == InfoGame.Winner.CIRCLE) /*   Creo il fatto won(A, B, -1)   */ {
+                fact = "won(" + coords[0] + ", " + coords[1] + ", -1).";
+                program.addProgram(fact);
+            }
+            else if(b.GetWinner() == InfoGame.Winner.CROSS) /*   Creo il fatto won(A, B, -1)   */ {
+                fact = "won(" + coords[0] + ", " + coords[1] + ", 1).";
+                program.addProgram(fact);
+            }
+            int[][] subBoard = b.getSubBoard();
+            for (int a=0; a<3; a++){
+                for (int c=0; c<3; c++) {
+                    if (subBoard[a][c] == 1) {
+                        fact = "\n\tsmallBoard_State(" + coords[0] + ", " + coords[1] + ", " + a + ", " + c + ", 1).";
+                        program.addProgram(fact);
+                    }
+                    else if (subBoard[a][c] == -1) {
+                        fact = "\n\tsmallBoard_State(" + coords[0] + ", " + coords[1] + ", " + a + ", " + c + ", -1).";
+                        program.addProgram(fact);
                     }
                 }
             }
@@ -86,19 +101,91 @@ public class EmbaspManager {
 
         AnswerSets answersets = (AnswerSets) output;
 
-        for(AnswerSet a: answersets.getAnswersets()){ //getOptimalAnswerSet da usare
-            try {
-                for(Object obj : a.getAtoms()){
-                    if(obj instanceof symbol){
-                        System.out.println(obj);
-                    }
-                }
+        String result = answersets.getAnswerSetsString();
+
+        result = result.replaceAll("\\DLV 2.1.1|\\{mossa_definitiva\\(|\\)\\}", "");
+
+        result = result.replace("\n", "");
+
+        String[] parts = result.split(",");
+
+
+        String p = parts[0] + "_" + parts[1];
+        int l = retransformCoordinates(p);
+
+        ArrayList<Integer> coords = new ArrayList<Integer>();
+        coords.add(Integer.valueOf(parts[2]));
+        coords.add(Integer.valueOf(parts[3]));
+        coords.add(l);
+
+        return coords;
+    }
+
+    private static String transformCoordinates(int number) {
+        switch (number){
+            case 0 -> {
+                return "0_0";
             }
-            catch (Exception e) {
-                e.printStackTrace();
+            case 1 -> {
+                return"0_1";
             }
-        }
+            case 2 -> {
+                return"0_2";
+            }
+            case 3 -> {
+                return"1_0";
+            }
+            case 4 -> {
+                return"1_1";
+            }
+            case 5 -> {
+                return"1_2";
+            }
+            case 6 -> {
+                return"2_0";
+            }
+            case 7 -> {
+                return"2_1";
+            }
+            case 8 -> {
+                return"2_2";
+            }
+        }    //nextBoard può anche essere -1 quando si gioca in più celle
         return null;
+    }
+    private static int retransformCoordinates(String coords) {
+        int smallBoard = -1;
+
+        switch (coords){
+            case "0_0" -> {
+                return 0;
+            }
+            case "0_1" -> {
+                return 1;
+            }
+            case "0_2" -> {
+                return 2;
+            }
+            case "1_0" -> {
+                return 3;
+            }
+            case "1_1" -> {
+                return 4;
+            }
+            case "1_2" -> {
+                return 5;
+            }
+            case "2_0" -> {
+                return 6;
+            }
+            case "2_1" -> {
+                return 7;
+            }
+            case "2_2" -> {
+                return 8;
+            }
+        }    // trasformo le coordinate da EmbASP a java
+        return smallBoard;
     }
 
     //Metodo ChatCM ancora da testare

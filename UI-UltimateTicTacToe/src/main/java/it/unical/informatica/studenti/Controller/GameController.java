@@ -50,19 +50,6 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
 
         DoMove(o,id,i,j);       //va a colorare il bordo della prossima board di gioco con il calcolo (3*indiceriga)+indicecolonna di dove è stato inserito l'ultimo mark
 
-//        WorldGame.getInstance().getBigBoard().PrintSmallBoards();
-//
-//        for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()){
-//            if (b.getId()==WorldGame.getInstance().getBigBoard().getNextBoard()){
-//                for (int f=0; i<3; i++){
-//                    for (int k=0; k<3; k++){
-//                        System.out.print(b.getSubBoard()[f][k]);
-//                    }
-//                    System.out.println();
-//                }
-//            }
-//        }
-
         if(!worldGame.isIACalling()) {
             SwingUtilities.invokeLater( () -> {
                 try {
@@ -173,7 +160,7 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
                 case DRAW, NOWINNER -> Settings.Img.Draw;
             };
 
-            System.out.println("Launch GameWinView");
+            //System.out.println("Launch GameWinView");
             GameWinView.launch(frame, gameView, imgPath);
 
         } catch (IOException e) {

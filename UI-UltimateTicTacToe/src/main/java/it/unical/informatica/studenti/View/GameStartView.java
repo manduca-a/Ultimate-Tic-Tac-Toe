@@ -18,7 +18,7 @@ public class GameStartView {
 
         if (oldPanel != null) {
             frame.remove(oldPanel);
-            System.out.println("oldPanel removed!");
+//            System.out.println("oldPanel removed!");
         }
 
         frame.setLayout(new BorderLayout());

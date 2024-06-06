@@ -78,13 +78,13 @@ public class WorldGame {
     }
     public void avviaIAvsIA(){
         if(chiInizia()){
-            System.out.println("Sta iniziando: "+Settings.TeamsPlaying[0]);
+//            System.out.println("Sta iniziando: "+Settings.TeamsPlaying[0]);
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[0]);
             assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
         }
         else{
-            System.out.println("Sta iniziando: "+Settings.TeamsPlaying[1]);
+//            System.out.println("Sta iniziando: "+Settings.TeamsPlaying[1]);
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.TeamsPlaying[1]);
             assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
@@ -93,7 +93,7 @@ public class WorldGame {
 
     public void avviaPlayervsIA(){
         if(chiInizia()) {
-            System.out.println("\n\tIA");
+//            System.out.println("\n\tIA");
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer); //da cambiare in base a quale team deve giocare come IA
             assert coords != null;
             GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
