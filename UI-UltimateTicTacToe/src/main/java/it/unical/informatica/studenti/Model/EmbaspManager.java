@@ -4,8 +4,6 @@ import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.*;
 import it.unical.informatica.studenti.Model.ClassiEmbASP.GM.*;
 import it.unical.informatica.studenti.Model.ClassiEmbASP.GM.Common.Move;
 import it.unical.informatica.studenti.Model.ClassiEmbASP.GM.Utils.GMUtils;
-import it.unical.informatica.studenti.Model.ClassiEmbASP.QueryQueens.occupiedCell;
-import it.unical.informatica.studenti.Model.ClassiEmbASP.QueryQueens.symbol;
 import it.unical.informatica.studenti.OsCheck;
 import it.unical.informatica.studenti.Teams;
 import it.unical.informatica.studenti.WorldGame;
@@ -21,7 +19,6 @@ import it.unical.mat.embasp.platforms.desktop.DesktopService;
 import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -30,7 +27,7 @@ public class EmbaspManager {
     public static ArrayList<Integer> avviaASP(Teams team){
         try {
             DesktopService service = switch (OsCheck.getOperatingSystemType()) {
-                case Windows -> new DLV2DesktopService("UI-UltimateTicTacToe/src/main/resources/EmbASP/dlv2_win64.exe");
+                case Windows -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_win64.exe");
                 case MacOS -> new DLV2DesktopService("src/main/resources/EmbASP/dlv-2.1.2-arm64");
                 case Linux -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_linux64");
                 default -> throw new Exception("No DLV for this OS.");
@@ -104,11 +101,13 @@ public class EmbaspManager {
             program.addObjectInput(new MoveEnemyCanWin(m.getB(), m.getX(), m.getY()));
 
         handler.addProgram(program);
+        System.out.println(program.getPrograms());
         Output output = handler.startSync();
         ASPMapper.getInstance().registerClass(InPossibleMove.class);
 
 
         AnswerSets answersets = (AnswerSets) output;
+        System.out.println(output.getOutput());
 
         InPossibleMove move;
 
@@ -312,7 +311,7 @@ public class EmbaspManager {
         program.addObjectInput(new Marker(WorldGame.getInstance().getUserToPlay()));
         program.addObjectInput(new EnemyMarker(WorldGame.getInstance().getUserToPlay()*-1));
         program.addObjectInput(new GridToPlay(WorldGame.getInstance().getBigBoard().getNextBoard()));
-        program.addObjectInput(new Move(turnCounter));
+        program.addObjectInput(new it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.Move(turnCounter));
 
         System.out.println(program.getPrograms());
         //eventuali altri predicati da aggiungere da input

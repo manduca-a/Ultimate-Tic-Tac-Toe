@@ -1,15 +1,11 @@
 package it.unical.informatica.studenti.Model.ClassiEmbASP.GM.Common;
 
-import it.unical.mat.embasp.languages.Param;
-
 public class Move {
-    @Param(0)
+
     protected int B;
 
-    @Param(1)
     protected int X;
 
-    @Param(2)
     protected int Y;
 
     public Move(int B, int X, int Y){

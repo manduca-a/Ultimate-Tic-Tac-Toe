@@ -1,0 +1,21 @@
+cell(0..2, 0..2).
+indexBoard(0..8).
+
+board(B, X, Y) :- indexBoard(B), cell(X,Y).
+inPossibleMove(B,X,Y) | outPossibleMove(B,X,Y) :- not myMove(B,X,Y), not enemyMove(B,X,Y), board(B,X,Y), currentBoard(B).
+
+:- #count { B,X,Y: inPossibleMove(B,X,Y)} != 1.
+cewm(C) :- #count {B,X,Y:moveEnemyCanWin(B,X,Y), currentBoard(B)} = C.
+cmwm(C) :- #count {B,X,Y:moveICanWin(B,X,Y), currentBoard(B)} = C.
+cmwmipm(C,B1) :- inPossibleMove(B,X,Y), B1 = 3*X+Y, #count {B1,X1,Y1:moveICanWin(B1,X1,Y1)} = C.
+cmm(1) :- #count {B,X,Y:myMove(B,X,Y)} > 0.
+
+:~ inPossibleMove(B,X,Y), boardWinByMe(B1),B1 != B, B1 = 3*X+Y. [1@13]
+:~ inPossibleMove(B,X,Y), boardWinByEnemy(B1),B1 != B, B1 = 3*X+Y. [1@13]
+:~ inPossibleMove(B,X,Y), moveEnemyCanWin(B1,_,_), B1 != B, B1 = 3*X+Y. [1@12]
+:~ inPossibleMove(B,X,Y), boardCanWin(B1), cmwmipm(C,B1), C = 1. [1@11]
+:~ inPossibleMove(B,X,Y), X=1, Y=1, cmwm(C1), C1 = 0, cewm(C), C = 0, cmm(1). [1@10]
+:~ outPossibleMove(B,X,Y), moveEnemyCanWin(B,X,Y). [1@9]
+:~ outPossibleMove(B,X,Y), moveICanWin(B,X,Y). [2@9]
+:~ outPossibleMove(B,X,Y), X!=1, Y!=1, cmwm(C1), C1 = 0, cewm(C), C = 0. [1@7]
+:~ outPossibleMove(B,X,Y), X=1, Y=1, cmwm(C1), C1 = 0, cewm(C), C = 0, not cmm(1). [1@6]
