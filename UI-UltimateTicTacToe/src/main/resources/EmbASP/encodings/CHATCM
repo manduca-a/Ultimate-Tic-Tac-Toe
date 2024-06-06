@@ -186,3 +186,10 @@ Draw(ID) :- #count{I,J : FullCell(I,J,ID,_)} = 8, InsertMarker(_,_,ID,V), not Su
  :~ InsertMarker(I,J,_,_), SubTris(I*3+J,_), CanWin(ID,_,_,_), I*3+J != ID, BoardStillAvailable(ID).[2@3]
  :~ InsertMarker(I,J,_,_), Draw(I*3+J), CanWin(ID,_,_,_), I*3+J != ID, BoardStillAvailable(ID).[2@3]
 
+% evito le connected cells dove il nemico ha conquistato una o più boards, è pari o nessuno può vincere.
+ :~ ConnectedBoards(X,Y,Z), SubTris(X,V), GridToPlay(-1), InsertMarker(_,_,ID,V), Y!=ID, Z!=ID, NoEnemyBoard(Y), NoEnemyBoard(Z), not UsefulBoard(ID). [15@1]
+
+ UsefulBoard(Y) :- ConnectedBoards(X,Y,Z), SubTris(X,V), Marker(V), NoEnemyBoard(Y), NoEnemyBoard(Z).
+ UsefulBoard(Z) :- ConnectedBoards(X,Y,Z), SubTris(X,V), Marker(V), NoEnemyBoard(Y), NoEnemyBoard(Z).
+
+ NoEnemyBoard(ID) :- Board(ID), EnemyMarker(M), not SubTris(ID,M), not Draw(ID), not NoWinnerBoard(ID).
