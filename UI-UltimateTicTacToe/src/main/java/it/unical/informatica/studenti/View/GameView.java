@@ -71,11 +71,11 @@ public class GameView extends JPanel {
             }
             case PlayerVsIA -> {
                 if (WorldGame.getInstance().isIACalling()) {
-                    System.out.println("isAICalling=True");
+//                    System.out.println("isAICalling=True");
                     player1 = Settings.IAPlayingVsPLayer.toString();
                     player2 = "Player";
                 } else {
-                    System.out.println("isAICalling=False");
+//                    System.out.println("isAICalling=False");
                     player1 = "Player";
                     player2 = Settings.IAPlayingVsPLayer.toString();
                 }
