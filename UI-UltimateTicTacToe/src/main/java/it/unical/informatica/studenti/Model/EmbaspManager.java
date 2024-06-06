@@ -63,7 +63,7 @@ public class EmbaspManager {
         for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()) {
             if(b.GetWinner() == InfoGame.Winner.NOWINNER) {
                 for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
+                    for (int j = 0; j < 3; j++) { // Bisogna vedere chi siamo noi come simbolo, se 1 o -1
                         if (b.getSubBoard()[i][j] == WorldGame.getInstance().getUserToPlay())
                             program.addObjectInput(new MyMove(b.getId(),i, j));
                         else if (b.getSubBoard()[i][j] != 0)
@@ -71,6 +71,7 @@ public class EmbaspManager {
                     }
                 }
             }
+            // Bisogna vedere chi siamo noi come simbolo, se 1 o -1, nel caso da mettere come boardWinByMe o boardWinByEnemy
             else{
                 switch(b.GetWinner()){
                     case CROSS -> {
@@ -113,7 +114,7 @@ public class EmbaspManager {
 
 
         try{
-            for (AnswerSet a : answersets.getOptimalAnswerSets()) {
+            for (AnswerSet a : answersets.getOptimalAnswerSets()) { //getOptimalAnswerSet da usare
                 try {
                     for (Object obj : a.getAtoms()) {
                         if (!(obj instanceof InPossibleMove)) continue;
@@ -126,6 +127,7 @@ public class EmbaspManager {
             }
         }
         catch (NoSuchElementException ex){
+            // if there is no optimal answer set, get the first one
             for (AnswerSet a : answersets.getAnswersets()) {
                 try {
                     for (Object obj : a.getAtoms()) {
