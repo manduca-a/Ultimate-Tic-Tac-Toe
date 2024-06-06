@@ -79,6 +79,11 @@ Draw(ID) :- #count{I,J : FullCell(I,J,ID,_)} = 8, InsertMarker(_,_,ID,V), not Su
 
   NoWinnerBoard(ID) :- Board(ID), #count{ I,J,I1,J1,I2,J2 : TrisAvailable(I,J,I1,J1,I2,J2,ID,_)} = 0, not Draw(ID), not SubTris(ID,V), Marker(V), not SubTris(ID,M), EnemyMarker(M).
 
+ UsefulBoard(Y) :- ConnectedBoards(X,Y,Z), SubTris(X,V), Marker(V), NoEnemyBoard(Y), NoEnemyBoard(Z).
+ UsefulBoard(Z) :- ConnectedBoards(X,Y,Z), SubTris(X,V), Marker(V), NoEnemyBoard(Y), NoEnemyBoard(Z).
+
+ NoEnemyBoard(ID) :- Board(ID), EnemyMarker(M), not SubTris(ID,M), not Draw(ID), not NoWinnerBoard(ID).
+
 %Esprime il concetto che ancora nessuno ha bloccato quella board e si ci può ancora giocare
 
  BoardStillAvailable(ID) :- Board(ID), Marker(V), EnemyMarker(M), not SubTris(ID,V), not SubTris(ID,M), not Draw(ID).
@@ -188,8 +193,3 @@ Draw(ID) :- #count{I,J : FullCell(I,J,ID,_)} = 8, InsertMarker(_,_,ID,V), not Su
 
 % evito le connected cells dove il nemico ha conquistato una o più boards, è pari o nessuno può vincere.
  :~ ConnectedBoards(X,Y,Z), SubTris(X,V), GridToPlay(-1), InsertMarker(_,_,ID,V), Y!=ID, Z!=ID, NoEnemyBoard(Y), NoEnemyBoard(Z), not UsefulBoard(ID). [15@1]
-
- UsefulBoard(Y) :- ConnectedBoards(X,Y,Z), SubTris(X,V), Marker(V), NoEnemyBoard(Y), NoEnemyBoard(Z).
- UsefulBoard(Z) :- ConnectedBoards(X,Y,Z), SubTris(X,V), Marker(V), NoEnemyBoard(Y), NoEnemyBoard(Z).
-
- NoEnemyBoard(ID) :- Board(ID), EnemyMarker(M), not SubTris(ID,M), not Draw(ID), not NoWinnerBoard(ID).
