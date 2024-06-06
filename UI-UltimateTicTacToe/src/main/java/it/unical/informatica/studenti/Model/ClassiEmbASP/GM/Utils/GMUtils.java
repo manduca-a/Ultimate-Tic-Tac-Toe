@@ -20,7 +20,7 @@ public class GMUtils {
         int bestValue = -1;
         List<Move> winnableMoves = getWinnableMoves(WorldGame.getInstance().getUserToPlay());
         List<Move> enemyWinnableMoves = getWinnableMoves(-WorldGame.getInstance().getUserToPlay());
-        if(!winnableMoves.isEmpty() && !enemyWinnableMoves.isEmpty()){
+        if(!winnableMoves.isEmpty() || !enemyWinnableMoves.isEmpty()){
             HashMap<Integer, Integer> boards = new HashMap<>();
             for(Move m: winnableMoves){
                 if(!boards.containsKey(m.getB())){
