@@ -4,12 +4,15 @@ import it.unical.informatica.studenti.Model.ClassiEmbASP.ChatCM.*;
 import it.unical.informatica.studenti.Model.ClassiEmbASP.GM.*;
 import it.unical.informatica.studenti.Model.ClassiEmbASP.GM.Common.Move;
 import it.unical.informatica.studenti.Model.ClassiEmbASP.GM.Utils.GMUtils;
+import it.unical.informatica.studenti.Model.ClassiEmbASP.QueryQueens.Mossa_definitiva;
 import it.unical.informatica.studenti.OsCheck;
 import it.unical.informatica.studenti.Teams;
 import it.unical.informatica.studenti.WorldGame;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;
+import it.unical.mat.embasp.languages.IllegalAnnotationException;
+import it.unical.mat.embasp.languages.ObjectNotValidException;
 import it.unical.mat.embasp.languages.asp.ASPInputProgram;
 import it.unical.mat.embasp.languages.asp.ASPMapper;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
@@ -21,8 +24,6 @@ import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class EmbaspManager {
 
@@ -146,144 +147,66 @@ public class EmbaspManager {
         return null;
     }
 
-    private static ArrayList<Integer> ASPQueryQueens(Handler handler, InputProgram program) {
+    private static ArrayList<Integer> ASPQueryQueens(Handler handler, InputProgram program) throws ObjectNotValidException, IllegalAnnotationException {
         handler.removeAll();
 
-        String nextBoard = transformCoordinates(WorldGame.getInstance().getBigBoard().getNextBoard());
+        int nextBoard = WorldGame.getInstance().getBigBoard().getNextBoard();
 
-        String fact = null;
-        if (nextBoard != null) /*   Se si gioca in una sola board creo il fatto playingSmallBoard   */ {
-            String[] splitted = nextBoard.split("_");
-            fact = "playingSmallBoard(" + splitted[0] + ", " + splitted[1] + ").";
+        String fact;
+        if (nextBoard >= 0) /*   Se si gioca in una sola board creo il fatto playingSmallBoard   */ {
+            fact = "playingSmallBoard(" + nextBoard + ").";
             program.addProgram(fact);
         }
         fact = "marker(" + WorldGame.getInstance().getUserToPlay() + ").";
         program.addProgram(fact);
         int i=0;
         for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()) {
-            String tosplit = transformCoordinates(i);
-            i++;
-            String[] coords = new String[0];
-            if (tosplit != null) {
-                coords = tosplit.split("_");
-            }
             if(b.GetWinner() == InfoGame.Winner.CIRCLE) /*   Creo il fatto won(A, B, -1)   */ {
-                fact = "won(" + coords[0] + ", " + coords[1] + ", -1).";
+                fact = "won(" + i + ", -1).";
                 program.addProgram(fact);
             }
             else if(b.GetWinner() == InfoGame.Winner.CROSS) /*   Creo il fatto won(A, B, -1)   */ {
-                fact = "won(" + coords[0] + ", " + coords[1] + ", 1).";
+                fact = "won(" + i + ", 1).";
                 program.addProgram(fact);
             }
             int[][] subBoard = b.getSubBoard();
             for (int a=0; a<3; a++){
                 for (int c=0; c<3; c++) {
                     if (subBoard[a][c] == 1) {
-                        fact = "\n\tsmallBoard_State(" + coords[0] + ", " + coords[1] + ", " + a + ", " + c + ", 1).";
+                        fact = "\n\tsmallBoard_State(" + i + ", " + a + ", " + c + ", 1).";
                         program.addProgram(fact);
                     }
                     else if (subBoard[a][c] == -1) {
-                        fact = "\n\tsmallBoard_State(" + coords[0] + ", " + coords[1] + ", " + a + ", " + c + ", -1).";
+                        fact = "\n\tsmallBoard_State(" + i + ", " + a + ", " + c + ", -1).";
                         program.addProgram(fact);
                     }
                 }
             }
+            i++;
         }
 
         handler.addProgram(program);
 
         Output output = handler.startSync();
 
+        ASPMapper.getInstance().registerClass(Mossa_definitiva.class);
+
         AnswerSets answersets = (AnswerSets) output;
 
-        String result = answersets.getAnswerSetsString();
+        Mossa_definitiva mossa;
 
-        Pattern pattern = Pattern.compile("mossa_definitiva\\(([^\\)]+)\\)");
-        Matcher matcher = pattern.matcher(result);
-
-        while (matcher.find()) {
-            // Estrae l'argomento di mossa_definitiva()
-            result = matcher.group(1);
+        for (AnswerSet a : answersets.getOptimalAnswerSets()) {
+            try {
+                for (Object obj : a.getAtoms()) {
+                    if (!(obj instanceof Mossa_definitiva)) continue;
+                    mossa = (Mossa_definitiva) obj;
+                    return mossa.getInsertData();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        String[] parts = result.split(",");
-
-        String p = parts[0] + "_" + parts[1];
-        int l = retransformCoordinates(p);
-
-        ArrayList<Integer> coords = new ArrayList<Integer>();
-        coords.add(Integer.valueOf(parts[2]));
-        coords.add(Integer.valueOf(parts[3]));
-        coords.add(l);
-
-        return coords;
-    }
-
-    private static String transformCoordinates(int number) {
-        switch (number){
-            case 0 -> {
-                return "0_0";
-            }
-            case 1 -> {
-                return"0_1";
-            }
-            case 2 -> {
-                return"0_2";
-            }
-            case 3 -> {
-                return"1_0";
-            }
-            case 4 -> {
-                return"1_1";
-            }
-            case 5 -> {
-                return"1_2";
-            }
-            case 6 -> {
-                return"2_0";
-            }
-            case 7 -> {
-                return"2_1";
-            }
-            case 8 -> {
-                return"2_2";
-            }
-        }    //nextBoard può anche essere -1 quando si gioca in più celle
         return null;
-    }
-    private static int retransformCoordinates(String coords) {
-        int smallBoard = -1;
-
-        switch (coords){
-            case "0_0" -> {
-                return 0;
-            }
-            case "0_1" -> {
-                return 1;
-            }
-            case "0_2" -> {
-                return 2;
-            }
-            case "1_0" -> {
-                return 3;
-            }
-            case "1_1" -> {
-                return 4;
-            }
-            case "1_2" -> {
-                return 5;
-            }
-            case "2_0" -> {
-                return 6;
-            }
-            case "2_1" -> {
-                return 7;
-            }
-            case "2_2" -> {
-                return 8;
-            }
-        }    // trasformo le coordinate da EmbASP a java
-        return smallBoard;
     }
 
     //Metodo ChatCM ancora da testare

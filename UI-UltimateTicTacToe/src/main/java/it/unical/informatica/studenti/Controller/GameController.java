@@ -72,7 +72,7 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
 
         SwingUtilities.invokeLater( () -> {
             try {
-                //Thread.sleep(2000);
+                Thread.sleep(300);
                 for (int v = 0; v < 2; v++) {
                     if (!worldGame.getIAStartingPlaying()[v]) {
                         worldGame.SwapIAPlaying();

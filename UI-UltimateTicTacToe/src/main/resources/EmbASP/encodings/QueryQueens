@@ -1,7 +1,7 @@
 cell(0..2).
 
-bigBoard_cell(X, Y) :- cell(X), cell(Y).
-smallBoard_cell(X, Y) :- cell(X), cell(Y).
+bigBoard_cell(0..8).
+smallBoard_cell(0..2, 0..2).
 
 %% fatti per le linee di vincita con due marker consecutivi o con buco in mezzo
 
@@ -45,193 +45,193 @@ strategia(1,1,0,0,0,1). strategia(1,1,0,2,0,1). strategia(1,1,2,0,2,1). strategi
 
 %%%     GUESS & CHECK
 
-mossa_definitiva(A, B, X, Y) | not_mossa_definitiva(A, B, X, Y) :- possible_move(A, B, X, Y).
+mossa_definitiva(X, Y, A) | not_mossa_definitiva(X, Y, A) :- possible_move(A, X, Y).
 
-:- #count{A, B, C, D : mossa_definitiva(A, B, C, D)} != 1.
+:- #count{A, C, D : mossa_definitiva(A, C, D)} != 1.
 
 
 
 %%  Definisco la prossima smallBoard in cui si giocherà
 
-next_playingSmallBoard(X, Y) :- mossa_definitiva(A, B, X, Y), bigBoard_cell(X, Y).
+next_playingSmallBoard(F) :- mossa_definitiva(X, Y, _), bigBoard_cell(F), F=3*X+Y.
 
 
 enemy_marker(X) :- marker(Y), X=-Y.
 
-occupiedCell(A, B, X, Y) :- smallBoard_State(A, B, X, Y, _).
-empty(A, B, X, Y) :- not occupiedCell(A, B, X, Y), bigBoard_cell(A, B), smallBoard_cell(X, Y).
+occupiedCell(A, X, Y) :- smallBoard_State(A, X, Y, _).
+empty(A, X, Y) :- not occupiedCell(A, X, Y), bigBoard_cell(A), smallBoard_cell(X, Y).
 
 
 
 
 %%%  2.  Controllo se ci sono due marker IA in fila o con un buco e vado a vincere
 
-viciniO(A, B, X, Y, J, K) :- playingSmallBoard(A, B), line(X, Y, J, K), smallBoard_State(A, B, X, Y, M), marker(M), smallBoard_State(A, B, J, K, M).
+viciniO(A, X, Y, J, K) :- playingSmallBoard(A), line(X, Y, J, K), smallBoard_State(A, X, Y, M), marker(M), smallBoard_State(A, J, K, M).
 
     %% Salvo in viciniO la bigBoard e le due celle della smallBoard con i valori
 
     %%%    Controllo che la cella per giocare sia libera
 
 
-possible_movew(A, B, G, I) :- not cantplay(A, B), viciniO(A, B, X, Y, J, K), tris(G, I, X, Y, J, K), empty(A, B, G, I).
-possible_movew(A, B, G, I) :- not cantplay(A, B), viciniO(A, B, X, Y, J, K), tris(X, Y, G, I, J, K), empty(A, B, G, I).
-possible_movew(A, B, G, I) :- not cantplay(A, B), viciniO(A, B, X, Y, J, K), tris(X, Y, J, K, G, I), empty(A, B, G, I).
+possible_movew(A, G, I) :- not cantplay(A), viciniO(A, X, Y, J, K), tris(G, I, X, Y, J, K), empty(A, G, I).
+possible_movew(A, G, I) :- not cantplay(A), viciniO(A, X, Y, J, K), tris(X, Y, G, I, J, K), empty(A, G, I).
+possible_movew(A, G, I) :- not cantplay(A), viciniO(A, X, Y, J, K), tris(X, Y, J, K, G, I), empty(A, G, I).
 
 
-       possible_move(A, B, X, Y) :- possible_movew(A, B, X, Y).
+       possible_move(A, X, Y) :- possible_movew(A, X, Y).
 
 
 %%%  2.2.   Controllo se in qualche board IA può vincere
 
-viciniO_OB(A, B) :- not playingSmallBoard(A, B), line(X, Y, J, K), smallBoard_State(A, B, X, Y, M), marker(M), smallBoard_State(A, B, J, K, M).
+viciniO_OB(A) :- not playingSmallBoard(A), line(X, Y, J, K), smallBoard_State(A, X, Y, M), marker(M), smallBoard_State(A, J, K, M).
 
 
 
 
 %%%  3.  Controllo se ci sono due marker avversario in fila o con un buco e vado contrastare
 
-viciniX(A, B, X, Y, J, K) :- playingSmallBoard(A, B), line(X, Y, J, K), smallBoard_State(A, B, X, Y, M), enemy_marker(M), smallBoard_State(A, B, J, K, M).
+viciniX(A, X, Y, J, K) :- playingSmallBoard(A), line(X, Y, J, K), smallBoard_State(A, X, Y, M), enemy_marker(M), smallBoard_State(A, J, K, M).
 
     %% Salvo in viciniX la cella della bigBoard e le due celle della smallBoard con i valori
 
     %%%   Controllo che la cella per giocare sia libera
 
-possible_movec(A, B, G, I) :- not cantplay(A, B), viciniX(A, B, X, Y, J, K), tris(G, I, X, Y, J, K), empty(A, B, G, I).
-possible_movec(A, B, G, I) :- not cantplay(A, B), viciniX(A, B, X, Y, J, K), tris(X, Y, G, I, J, K), empty(A, B, G, I).
-possible_movec(A, B, G, I) :- not cantplay(A, B), viciniX(A, B, X, Y, J, K), tris(X, Y, J, K, G, I), empty(A, B, G, I).
+possible_movec(A, G, I) :- not cantplay(A), viciniX(A, X, Y, J, K), tris(G, I, X, Y, J, K), empty(A, G, I).
+possible_movec(A, G, I) :- not cantplay(A), viciniX(A, X, Y, J, K), tris(X, Y, G, I, J, K), empty(A, G, I).
+possible_movec(A, G, I) :- not cantplay(A), viciniX(A, X, Y, J, K), tris(X, Y, J, K, G, I), empty(A, G, I).
 
 
-       possible_move(A, B, X, Y) :- possible_movec(A, B, X, Y).
+       possible_move(A, X, Y) :- possible_movec(A, X, Y).
 
 %%%   3.2.   Controllo se in qualche board l'avversario può vincere
 
-viciniX_OB(A, B) :- not playingSmallBoard(A, B), line(X, Y, J, K), smallBoard_State(A, B, X, Y, M), enemy_marker(M), smallBoard_State(A, B, J, K, M).
+viciniX_OB(A) :- not playingSmallBoard(A), line(X, Y, J, K), smallBoard_State(A, X, Y, M), enemy_marker(M), smallBoard_State(A, J, K, M).
 
 
 
 %%%   3.5  se l'IA ha giocato a lato continua al centro o al lato opposto
 
-possible_move_inlato(A, B, X, Y) :- not cantplay(A, B), playingSmallBoard(A, B), smallBoard_State(A, B, J, K, M), marker(M), latoO(J, K, X, Y), empty(A, B, X, Y).
-possible_move_inlato(A, B, 1, 1) :- not cantplay(A, B), playingSmallBoard(A, B), smallBoard_State(A, B, J, K, M), marker(M), lato(J, K), empty(A, B, 1, 1).
+possible_move_inlato(A, X, Y) :- not cantplay(A), playingSmallBoard(A), smallBoard_State(A, J, K, M), marker(M), latoO(J, K, X, Y), empty(A, X, Y).
+possible_move_inlato(A, 1, 1) :- not cantplay(A), playingSmallBoard(A), smallBoard_State(A, J, K, M), marker(M), lato(J, K), empty(A, 1, 1).
 
-possible_move(A, B, X, Y) :- possible_move_inlato(A, B, X, Y).
+possible_move(A, X, Y) :- possible_move_inlato(A, X, Y).
 
 
 %%%   3.7   Strategie
 
-possible_move_strategy(A, B, X, Y) :- not cantplay(A, B), playingSmallBoard(A, B), smallBoard_State(A, B, J, K, M), smallBoard_State(A, B, C, D, M), marker(M), strategia(J, K, C, D, X, Y), empty(A, B, X, Y).
+possible_move_strategy(A, X, Y) :- not cantplay(A), playingSmallBoard(A), smallBoard_State(A, J, K, M), smallBoard_State(A, C, D, M), marker(M), strategia(J, K, C, D, X, Y), empty(A, X, Y).
 
-possible_move(A, B, X, Y) :- possible_move_strategy(A, B, X, Y).
+possible_move(A, X, Y) :- possible_move_strategy(A, X, Y).
 
 
 
 
 %%%  4.   Se l'avversario gioca all'angolo e l'IA al centro, poi l'IA deve giocare a lato
 
-possible_movel(A, B, X, Y) :- not cantplay(A, B), playingSmallBoard(A, B), empty(A, B, X, Y), lato(X, Y), smallBoard_State(A, B, 1, 1, M), marker(M).
+possible_movel(A, X, Y) :- not cantplay(A), playingSmallBoard(A), empty(A, X, Y), lato(X, Y), smallBoard_State(A, 1, 1, M), marker(M).
 
-possible_move(A, B, X, Y) :- possible_movel(A, B, X, Y).
+possible_move(A, X, Y) :- possible_movel(A, X, Y).
 
 
 
 %%%  5.   Inizio mettendo all'angolo se sono il primo a giocare
 
-possible_moveAng(A, B, X, Y) :- angolo(X, Y), not cantplay(A, B), playingSmallBoard(A, B), not #count{Y, X : smallBoard_State(A, B, X, Y, _)}>0.
+possible_moveAng(A, X, Y) :- angolo(X, Y), not cantplay(A), playingSmallBoard(A), not #count{Y, X : smallBoard_State(A, X, Y, _)}>0.
 
-possible_move(A, B, X, Y) :- possible_moveAng(A, B, X, Y).
+possible_move(A, X, Y) :- possible_moveAng(A, X, Y).
 
 
 
 
 %%%  5.5.   Controllo se IA ha giocato nell'angolo ora gioca a quello opposto
 
-possible_move_AngOpp(A, B, J, K):- not cantplay(A, B), playingSmallBoard(A, B), smallBoard_State(A, B, X, Y, M), marker(M), angoliO(X, Y, J, K), empty(A, B, J, K).
+possible_move_AngOpp(A, J, K):- not cantplay(A), playingSmallBoard(A), smallBoard_State(A, X, Y, M), marker(M), angoliO(X, Y, J, K), empty(A, J, K).
 
-possible_move(A, B, X, Y) :- possible_move_AngOpp(A, B, X, Y).
+possible_move(A, X, Y) :- possible_move_AngOpp(A, X, Y).
 
 
 
 
 %%%  6.   Se IA gioca in due angoli opposti va a giocare nel terzo angolo per avere 2 possibilità
 
-possible_move_Ang3(A, B, X, Y) :- not cantplay(A, B), playingSmallBoard(A, B), angoliT(C, D, E, F, X, Y), marker(M), smallBoard_State(A, B, C, D, M), smallBoard_State(A, B, E, F, M), empty(A, B, X, Y).
+possible_move_Ang3(A, X, Y) :- not cantplay(A), playingSmallBoard(A), angoliT(C, D, E, F, X, Y), marker(M), smallBoard_State(A, C, D, M), smallBoard_State(A, E, F, M), empty(A, X, Y).
 
-possible_move(A, B, X, Y) :- possible_move_Ang3(A, B, X, Y).
+possible_move(A, X, Y) :- possible_move_Ang3(A, X, Y).
 
 
 
 
 %%%  7.   Controllo se l'avversario ha giocato al centro e non ci sono altre mosse faccio la mossa nell'angolo
 
-solo_una_avversario(A, B) :- playingSmallBoard(A, B), not #count{Y, X:smallBoard_State(A, B, X, Y, M), enemy_marker(M)}>1, not #count{Y, X : smallBoard_State(A, B, X, Y, M), marker(M)}>0.
+solo_una_avversario(A) :- playingSmallBoard(A), not #count{Y, X:smallBoard_State(A, X, Y, M), enemy_marker(M)}>1, not #count{Y, X : smallBoard_State(A, X, Y, M), marker(M)}>0.
 
-possible_moveAngC(A, B, X, Y) :- not cantplay(A, B), playingSmallBoard(A, B), smallBoard_State(A, B, 1, 1, M), enemy_marker(M), empty(A, B, X, Y), angolo(X, Y), solo_una_avversario(A, B).
+possible_moveAngC(A, X, Y) :- not cantplay(A), playingSmallBoard(A), smallBoard_State(A, 1, 1, M), enemy_marker(M), empty(A, X, Y), angolo(X, Y), solo_una_avversario(A).
 
-possible_move(A, B, X, Y) :- possible_moveAngC(A, B, X, Y).
+possible_move(A, X, Y) :- possible_moveAngC(A, X, Y).
 
 
 %%%  7.2   Controllo se l'avversario ha giocato a lato rispondo al centro
 
-possible_move_c(A, B, 1, 1) :- not cantplay(A, B), playingSmallBoard(A, B), smallBoard_State(A, B, X, Y, M), enemy_marker(M), lato(X, Y), empty(A, B, 1, 1).
+possible_move_c(A, 1, 1) :- not cantplay(A), playingSmallBoard(A), smallBoard_State(A, X, Y, M), enemy_marker(M), lato(X, Y), empty(A, 1, 1).
 
-possible_move(A, B, X, Y) :- possible_move_c(A, B, X, Y).
+possible_move(A, X, Y) :- possible_move_c(A, X, Y).
 
 
 %%%  7.5.   Controllo se l'avversario ha giocato nell'angolo faccio la mossa al centro
 
-possible_move_c(A, B, 1, 1) :- not cantplay(A, B), playingSmallBoard(A, B), smallBoard_State(A, B, X, Y, M), angolo(X, Y), enemy_marker(M), empty(A, B, 1, 1).
+possible_move_c(A, 1, 1) :- not cantplay(A), playingSmallBoard(A), smallBoard_State(A, X, Y, M), angolo(X, Y), enemy_marker(M), empty(A, 1, 1).
 
-possible_move(A, B, X, Y) :- possible_move_c(A, B, X, Y).
+possible_move(A, X, Y) :- possible_move_c(A, X, Y).
 
 
 %%%  7.75   Mossa casuale
 
-possible_move_random(A, B, X, Y) :- not cantplay(A, B), playingSmallBoard(A, B), empty(A, B, X, Y), #count{Y,X : smallBoard_State(A, B, X, Y, _), playingSmallBoard(A, B)}>0.
+possible_move_random(A, X, Y) :- not cantplay(A), playingSmallBoard(A), empty(A, X, Y), #count{Y,X : smallBoard_State(A, X, Y, _), playingSmallBoard(A)}>0.
 
-possible_move(A, B, X, Y) :- possible_move_random(A, B, X, Y).
+possible_move(A, X, Y) :- possible_move_random(A, X, Y).
 
 
 
 
 %%%  8.   Controllo se bisogna giocare in tutte le BigBoard e quella da scegliere non è già vinta
 
-neverywhere :- playingSmallBoard(_, _).     % non ovunque se c'è un qualsiasi playingSmallBoard
-cantplay(A, B) :- won(A, B, _).                 % non in (A, B) se è già vinta da qualcuno
-possible_move_O(A, B, X, Y) :- not neverywhere, not cantplay(A, B), empty(A, B, X, Y), bigBoard_cell(A, B), smallBoard_cell(X, Y).
+neverywhere :- playingSmallBoard(_).     % non ovunque se c'è un qualsiasi playingSmallBoard
+cantplay(A) :- won(A, _).                 % non in (A, B) se è già vinta da qualcuno
+possible_move_O(A, X, Y) :- not neverywhere, not cantplay(A), empty(A, X, Y), bigBoard_cell(A), smallBoard_cell(X, Y).
         %% se posso giocare ovunque e se quella bigBoard_cell non è già vinta e se quella smallBoard_cell è vuota
 
-possible_move(A, B, X, Y) :- possible_move_O(A, B, X, Y).
+possible_move(A, X, Y) :- possible_move_O(A, X, Y).
 
 
 
 
 %%%  WEAK COSTRAINTS
 
-:~ not_mossa_definitiva(A, B, X, Y), possible_movew(A, B, X, Y). [2@7]                                      %   scartare una mossa vincente è costoso
+:~ not_mossa_definitiva(X, Y, A), possible_movew(A, X, Y). [2@7]                                      %   scartare una mossa vincente è costoso
 
-:~ not_mossa_definitiva(A, B, X, Y), possible_movec(A, B, X, Y). [1@7]                                      %   scartare una mossa contrastante è meno costoso rispetto a scartare la vincente
+:~ not_mossa_definitiva(X, Y, A), possible_movec(A, X, Y). [1@7]                                      %   scartare una mossa contrastante è meno costoso rispetto a scartare la vincente
 
-:~ next_playingSmallBoard(A, B), viciniX_OB(A, B). [2@6]                                                    %   preferibile non avere avversario con turno dove ha due marker vicini
+:~ next_playingSmallBoard(A), viciniX_OB(A). [2@6]                                                    %   preferibile non avere avversario con turno dove ha due marker vicini
 
-:~ not_mossa_definitiva(A, B, X, Y), possible_move_O(A, B, X, Y), viciniO_OB(A, B). [2@6]                   %   preferibile non scartare una board dove IA potrebbe vincere quando si gioca ovunque
+:~ not_mossa_definitiva(X, Y, A), possible_move_O(A, X, Y), viciniO_OB(A). [2@6]                   %   preferibile non scartare una board dove IA potrebbe vincere quando si gioca ovunque
 
-:~ mossa_definitiva(A, B, X, Y), possible_move_random(A, B, X, Y). [20@5]                                   %   prendere una mossa casuale è costoso e lo si fa in casi estremi
-:~ mossa_definitiva(A, B, X, Y), possible_move_random(A, B, X, Y), not angolo(X, Y). [1@5]                  %   prenderla non all'angolo o al centro è meno preferibile
-:~ mossa_definitiva(A, B, X, Y), possible_move_random(A, B, X, Y), X!=1, Y!=1. [2@5]
+:~ mossa_definitiva(X, Y, A), possible_move_random(A, X, Y). [20@5]                                   %   prendere una mossa casuale è costoso e lo si fa in casi estremi
+:~ mossa_definitiva(X, Y, A), possible_move_random(A, X, Y), not angolo(X, Y). [1@5]                  %   prenderla non all'angolo o al centro è meno preferibile
+:~ mossa_definitiva(X, Y, A), possible_move_random(A, X, Y), X!=1, Y!=1. [2@5]
 
-:~ not_mossa_definitiva(A, B, X, Y), possible_moveAng(A, B, X, Y). [2@4]                                    %   essere il primo a giocare e non farlo nell'angolo è costoso
+:~ not_mossa_definitiva(X, Y, A), possible_moveAng(A, X, Y). [2@4]                                    %   essere il primo a giocare e non farlo nell'angolo è costoso
 
-:~ not_mossa_definitiva(A, B, X, Y), possible_move_AngOpp(A, B, X, Y). [2@4]                                %   se si deve giocare all'angolo opposto e non si fa, costa tanto
+:~ not_mossa_definitiva(X, Y, A), possible_move_AngOpp(A, X, Y). [2@4]                                %   se si deve giocare all'angolo opposto e non si fa, costa tanto
 
-:~ not_mossa_definitiva(A, B, X, Y), possible_move_Ang3(A, B, X, Y). [2@4]                                  %   se si deve giocare al terzo angolo opposto e non si fa, costa tanto
+:~ not_mossa_definitiva(X, Y,A), possible_move_Ang3(A, X, Y). [2@4]                                  %   se si deve giocare al terzo angolo opposto e non si fa, costa tanto
 
-:~ not_mossa_definitiva(A, B, X, Y), possible_moveAngC(A, B, X, Y). [2@3]                                   %   contrasto la prima mossa al centro dell'avversario
+:~ not_mossa_definitiva(X, Y, A), possible_moveAngC(A, X, Y). [2@3]                                   %   contrasto la prima mossa al centro dell'avversario
 
-:~ next_playingSmallBoard(A, B), won(A, B, _). [1@3]                                                        %   preferibile non avere l'avversario che sceglie la board
-
-
+:~ next_playingSmallBoard(A), won(A, _). [1@3]                                                        %   preferibile non avere l'avversario che sceglie la board
 
 
 
 
-#show mossa_definitiva/4.
+
+
+#show mossa_definitiva/3.
