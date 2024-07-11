@@ -21,13 +21,15 @@ import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmbaspManager {
 
     public static ArrayList<Integer> avviaASP(Teams team){
         try {
             DesktopService service = switch (OsCheck.getOperatingSystemType()) {
-                case Windows -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_win64.exe");
+                case Windows -> new DLV2DesktopService("UI-UltimateTicTacToe/src/main/resources/EmbASP/dlv2_win64.exe");
                 case MacOS -> new DLV2DesktopService("src/main/resources/EmbASP/dlv-2.1.2-arm64");
                 case Linux -> new DLV2DesktopService("src/main/resources/EmbASP/dlv2_linux64");
                 default -> throw new Exception("No DLV for this OS.");
@@ -35,7 +37,7 @@ public class EmbaspManager {
 
             Handler handler = new DesktopHandler(service);
             InputProgram program = new ASPInputProgram();
-            String path = "src/main/resources/EmbASP/encodings/" + team;
+            String path = "UI-UltimateTicTacToe/src/main/resources/EmbASP/encodings/" + team;
             program.addFilesPath(path);
             //Attenzione i file dentro encodings devono assumere il medesimo valore dell'enum per essere presi
             //(o almeno dovrebbe essere così, da testare)
@@ -155,13 +157,16 @@ public class EmbaspManager {
             fact = "playingSmallBoard(" + splitted[0] + ", " + splitted[1] + ").";
             program.addProgram(fact);
         }
-//        else System.out.println("no playing small board");
-////        devo cercare la board di gioco e passare tutti i dati ad ASP
+        fact = "marker(" + WorldGame.getInstance().getUserToPlay() + ").";
+        program.addProgram(fact);
         int i=0;
         for (SmallBoard b : WorldGame.getInstance().getBigBoard().getSmallBoards()) {
             String tosplit = transformCoordinates(i);
             i++;
-            String[] coords = tosplit.split("_");
+            String[] coords = new String[0];
+            if (tosplit != null) {
+                coords = tosplit.split("_");
+            }
             if(b.GetWinner() == InfoGame.Winner.CIRCLE) /*   Creo il fatto won(A, B, -1)   */ {
                 fact = "won(" + coords[0] + ", " + coords[1] + ", -1).";
                 program.addProgram(fact);
@@ -193,12 +198,15 @@ public class EmbaspManager {
 
         String result = answersets.getAnswerSetsString();
 
-        result = result.replaceAll("\\DLV 2.1.1|\\{mossa_definitiva\\(|\\)\\}", "");
+        Pattern pattern = Pattern.compile("mossa_definitiva\\(([^\\)]+)\\)");
+        Matcher matcher = pattern.matcher(result);
 
-        result = result.replace("\n", "");
+        while (matcher.find()) {
+            // Estrae l'argomento di mossa_definitiva()
+            result = matcher.group(1);
+        }
 
         String[] parts = result.split(",");
-
 
         String p = parts[0] + "_" + parts[1];
         int l = retransformCoordinates(p);
