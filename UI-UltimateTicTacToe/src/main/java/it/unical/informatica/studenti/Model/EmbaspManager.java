@@ -24,6 +24,8 @@ import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmbaspManager {
 
@@ -195,17 +197,40 @@ public class EmbaspManager {
 
         Mossa_definitiva mossa;
 
-        for (AnswerSet a : answersets.getOptimalAnswerSets()) {
-            try {
-                for (Object obj : a.getAtoms()) {
-                    if (!(obj instanceof Mossa_definitiva)) continue;
-                    mossa = (Mossa_definitiva) obj;
-                    return mossa.getInsertData();
+        if(nextBoard>=0) {
+            for (AnswerSet a : answersets.getOptimalAnswerSets()) {
+                try {
+                    for (Object obj : a.getAtoms()) {
+                        if (!(obj instanceof Mossa_definitiva)) continue;
+                        mossa = (Mossa_definitiva) obj;
+                        return mossa.getInsertData();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
+        else{
+            String result = answersets.getAnswerSetsString();
+
+            Pattern pattern = Pattern.compile("mossa_definitiva\\(([^\\)]+)\\)");
+            Matcher matcher = pattern.matcher(result);
+
+            while (matcher.find()) {
+                // Estrae l'argomento di mossa_definitiva()
+                result = matcher.group(1);
+            }
+
+            String[] parts = result.split(",");
+
+            ArrayList<Integer> coords = new ArrayList<Integer>();
+            coords.add(Integer.valueOf(parts[0]));
+            coords.add(Integer.valueOf(parts[1]));
+            coords.add(Integer.valueOf(parts[2]));
+
+            return coords;
+        }
+
         return null;
     }
 

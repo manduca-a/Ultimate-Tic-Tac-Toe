@@ -6,7 +6,6 @@ import it.unical.informatica.studenti.Model.EmbaspManager;
 import it.unical.informatica.studenti.View.GameView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class WorldGame {
@@ -95,11 +94,12 @@ public class WorldGame {
         if(chiInizia()) {
 //            System.out.println("\n\tIA");
             ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer); //da cambiare in base a quale team deve giocare come IA
-            assert coords != null;
-            GameView.getButton(coords.get(0),coords.get(1),coords.get(2)).doClick();
+            if(coords != null) {
+                GameView.getButton(coords.get(0), coords.get(1), coords.get(2)).doClick();
+            }
         }
-        else
-            System.out.println("\n\n\tPlayer!");
+//        else
+//            System.out.println("\tPlayer!");
     }
 
 

@@ -52,7 +52,6 @@ public class Mossa_definitiva {
     }
 
     public ArrayList<Integer> getInsertData(){
-        System.out.println(i+" "+j+" "+id);
         return new ArrayList<>(List.of(i,j,id));
     }
 }
