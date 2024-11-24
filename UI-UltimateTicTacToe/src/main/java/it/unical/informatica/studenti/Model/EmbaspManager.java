@@ -10,6 +10,7 @@ import it.unical.informatica.studenti.Teams;
 import it.unical.informatica.studenti.WorldGame;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
+import it.unical.mat.embasp.base.OptionDescriptor;
 import it.unical.mat.embasp.base.Output;
 import it.unical.mat.embasp.languages.IllegalAnnotationException;
 import it.unical.mat.embasp.languages.ObjectNotValidException;
@@ -152,6 +153,8 @@ public class EmbaspManager {
     private static ArrayList<Integer> ASPQueryQueens(Handler handler, InputProgram program) throws ObjectNotValidException, IllegalAnnotationException {
         handler.removeAll();
 
+        handler.addOption(new OptionDescriptor("--silent"));
+
         int nextBoard = WorldGame.getInstance().getBigBoard().getNextBoard();
 
         String fact;
@@ -195,40 +198,20 @@ public class EmbaspManager {
 
         AnswerSets answersets = (AnswerSets) output;
 
+//        System.out.println(answersets.getAnswerSetsString());
+
         Mossa_definitiva mossa;
 
-        if(nextBoard>=0) {
-            for (AnswerSet a : answersets.getOptimalAnswerSets()) {
-                try {
-                    for (Object obj : a.getAtoms()) {
-                        if (!(obj instanceof Mossa_definitiva)) continue;
-                        mossa = (Mossa_definitiva) obj;
-                        return mossa.getInsertData();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        for (AnswerSet a : answersets.getOptimalAnswerSets()) {
+            try {
+                for (Object obj : a.getAtoms()) {
+                    if (!(obj instanceof Mossa_definitiva)) continue;
+                    mossa = (Mossa_definitiva) obj;
+                    return mossa.getInsertData();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
-        else{
-            String result = answersets.getAnswerSetsString();
-
-            Pattern pattern = Pattern.compile("mossa_definitiva\\(([^\\)]+)\\)");
-            Matcher matcher = pattern.matcher(result);
-
-            while (matcher.find()) {
-                // Estrae l'argomento di mossa_definitiva()
-                result = matcher.group(1);
-            }
-
-            String[] parts = result.split(",");
-
-            ArrayList<Integer> coords = new ArrayList<Integer>();
-            coords.add(Integer.valueOf(parts[0]));
-            coords.add(Integer.valueOf(parts[1]));
-            coords.add(Integer.valueOf(parts[2]));
-
-            return coords;
         }
 
         return null;

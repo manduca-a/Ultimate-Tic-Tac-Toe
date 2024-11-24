@@ -53,7 +53,7 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
         if(!worldGame.isIACalling()) {
             SwingUtilities.invokeLater( () -> {
                 try {
-                    Thread.sleep(1200);
+//                    Thread.sleep(200);
                     worldGame.setIACalling(true);
                     ArrayList<Integer> coords = EmbaspManager.avviaASP(Settings.IAPlayingVsPLayer);
                     assert coords != null;
@@ -72,7 +72,7 @@ public class GameController extends KeyAdapter implements ActionListener, Winner
 
         SwingUtilities.invokeLater( () -> {
             try {
-                Thread.sleep(300);
+                Thread.sleep(800);
                 for (int v = 0; v < 2; v++) {
                     if (!worldGame.getIAStartingPlaying()[v]) {
                         worldGame.SwapIAPlaying();
